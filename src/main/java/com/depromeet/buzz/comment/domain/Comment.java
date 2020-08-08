@@ -1,5 +1,6 @@
 package com.depromeet.buzz.comment.domain;
 
+import com.depromeet.buzz.post.domain.Post;
 import com.depromeet.buzz.user.domain.User;
 
 import javax.persistence.*;
@@ -18,7 +19,8 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    //TODO Post Entity 연관관계 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Post post;
 
     @OneToMany(mappedBy = "parentComment")
     private List<Comment> subComments;
