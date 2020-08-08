@@ -16,7 +16,6 @@ public class Comment {
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
     private User user;
 
     //TODO Post Entity 연관관계 추가
@@ -27,8 +26,6 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parentComment;
 
-    //TODO Like 추가
-
     private Comment() {
     }
 
@@ -36,17 +33,30 @@ public class Comment {
      * 최상위 댓글 생성 시 사용 : 부모 댓글이 없다
      */
     public Comment(String comment, User user) {
+        validate(comment, user);
         this.comment = comment;
         this.user = user;
+    }
+
+    private void validate(String comment, User user) {
+        Objects.requireNonNull(comment, "코멘트가 없습니다.");
+        Objects.requireNonNull(user, "사용자가 없습니다.");
     }
 
     /**
      * 대댓글 생성 시 사용 : 부모 댓글 필수
      */
     public Comment(String comment, User user, Comment parentComment) {
+        validate(comment, user, parentComment);
         this.comment = comment;
         this.user = user;
         this.parentComment = parentComment;
+    }
+
+    private void validate(String comment, User user, Comment parentComment) {
+        Objects.requireNonNull(comment, "코멘트가 없습니다.");
+        Objects.requireNonNull(user, "사용자가 없습니다.");
+        Objects.requireNonNull(parentComment, "상위 코멘트를 찾을 수 없습니다.");
     }
 
     public Long getId() {
