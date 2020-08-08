@@ -1,4 +1,4 @@
-package com.depromeet.buzz.user.domain;
+package com.depromeet.buzz.category.domain;
 
 import java.util.Objects;
 
@@ -9,34 +9,23 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class User {
+public class Category {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(unique = true, nullable = false)
-	private String userId;
-
 	private String name;
 
-	private User() { }
+	private Category() { }
 
-	public User(String userId, String name) {
-		if(Objects.isNull(userId) || userId.trim().isEmpty()) {
-			throw new IllegalArgumentException("userId is empty");
+	public Category(String name) {
+		if(Objects.isNull(name) || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("category name is empty");
 		}
 
-		this.userId = userId;
 		this.name = name;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	@Override
@@ -49,20 +38,21 @@ public class User {
 			return false;
 		}
 
-		User user = (User)o;
-		return id.equals(user.id);
+		Category category = (Category)o;
+		return id.equals(category.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, userId, name);
+		return Objects.hash(id, name);
 	}
 
 	@Override
 	public String toString() {
-		return "User{" + "id=" + id +
-			", userId='" + userId + '\'' +
-			", name='" + name + '\'' + '}';
+		return "Category{" +
+			"id=" + id +
+			", name='" + name + '\'' +
+			'}';
 	}
 
 }
