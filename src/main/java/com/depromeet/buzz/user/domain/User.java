@@ -24,7 +24,7 @@ public class User {
 
 	public User(String userId, String name) {
 		if(Objects.isNull(userId) || userId.trim().isEmpty()) {
-			throw new IllegalArgumentException("userId 없음");
+			throw new IllegalArgumentException("userId is empty");
 		}
 
 		this.userId = userId;
@@ -37,6 +37,32 @@ public class User {
 
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		User user = (User)o;
+		return id.equals(user.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, userId, name);
+	}
+
+	@Override
+	public String toString() {
+		return "User{" + "id=" + id +
+			", userId='" + userId + '\'' +
+			", name='" + name + '\'' + '}';
 	}
 
 }
