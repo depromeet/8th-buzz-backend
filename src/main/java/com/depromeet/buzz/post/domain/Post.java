@@ -43,7 +43,7 @@ public class Post {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private Post() { }
+	private Post() {}
 
 	public Post(String productName, int price, String thumbnail,
 		String detailPage, Date regDate, Date closingDate) {
@@ -71,8 +71,7 @@ public class Post {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, productName, price, thumbnail,
-			detailPage, regDate, closingDate, category, user);
+		return Objects.hash(id);
 	}
 
 	@Override
