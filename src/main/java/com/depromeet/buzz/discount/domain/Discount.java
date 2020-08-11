@@ -23,7 +23,7 @@ public class Discount {
 	@JoinColumn(name = "post_id")
 	private Post post;
 
-	private int step;
+	private Step step;
 
 	private int interval;
 
@@ -33,23 +33,29 @@ public class Discount {
 
 	}
 
-	public Discount(Post post, int step, int interval, int discountRate) {
+	public Discount(Post post, Step step, int interval, int discountRate) {
 		this.post = post;
 		this.step = step;
 		this.interval = interval;
 		this.discountRate = discountRate;
 	}
 
+	public int getInterval() {
+		return interval;
+	}
+
+	public int getStep() {
+		return step.getStep();
+	}
+
+	public int getDiscountRate() {
+		return discountRate;
+	}
+
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 		Discount discount = (Discount)o;
 		return Objects.equals(id, discount.id);
 	}
@@ -70,4 +76,13 @@ public class Discount {
 			'}';
 	}
 
+	public int getStepByUserCount(int userCount) {
+		if(this.getInterval() <= userCount) {
+			return this.getStep();
+		}
+
+		return 0;
+	}
+
 }
+

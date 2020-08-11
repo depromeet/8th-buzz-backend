@@ -1,6 +1,7 @@
 package com.depromeet.buzz.post.domain;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -11,8 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.depromeet.buzz.category.domain.Category;
+import com.depromeet.buzz.discount.domain.Discount;
+import com.depromeet.buzz.participation.domain.Participation;
 import com.depromeet.buzz.user.domain.User;
 
 @Entity
@@ -43,6 +47,12 @@ public class Post {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	@OneToMany(mappedBy = "post")
+	private List<Discount> discounts;
+
+	@OneToMany(mappedBy = "post")
+	private List<Participation> participations;
+
 	private Post() {}
 
 	public Post(String productName, int price, String thumbnail,
@@ -57,14 +67,8 @@ public class Post {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 		Post post = (Post)o;
 		return id.equals(post.id);
 	}
@@ -86,7 +90,23 @@ public class Post {
 			", closingDate=" + closingDate +
 			", category=" + category +
 			", user=" + user +
+			", discounts=" + discounts +
+			", participations=" + participations +
 			'}';
+	}
+
+	public int findDiscountRateByUserCount() {
+		int userCount = participations.size();
+
+		Discount discount = findDiscountByUserCount(userCount);
+		return discount == null ? 0 : discount.getDiscountRate();
+	}
+
+	public Discount findDiscountByUserCount(int userCount) {
+		return discounts.stream()
+			.filter(x -> x.getStepByUserCount(userCount) > 0)
+			.max((x, y) -> ((Integer)x.getStep()).compareTo(y.getStep()))
+			.orElse(null);
 	}
 
 }
