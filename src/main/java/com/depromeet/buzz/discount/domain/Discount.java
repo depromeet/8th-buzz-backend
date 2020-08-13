@@ -3,6 +3,8 @@ package com.depromeet.buzz.discount.domain;
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,6 +25,7 @@ public class Discount {
 	@JoinColumn(name = "post_id")
 	private Post post;
 
+	@Enumerated(value = EnumType.STRING)
 	private Step step;
 
 	private int interval;
@@ -52,6 +55,14 @@ public class Discount {
 		return discountRate;
 	}
 
+	public int getStepByUserCount(int userCount) {
+		if(this.getInterval() <= userCount) {
+			return this.getStep();
+		}
+
+		return Step.ZERO.getStep();
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -74,14 +85,6 @@ public class Discount {
 			", interval=" + interval +
 			", discountRate=" + discountRate +
 			'}';
-	}
-
-	public int getStepByUserCount(int userCount) {
-		if(this.getInterval() <= userCount) {
-			return this.getStep();
-		}
-
-		return 0;
 	}
 
 }

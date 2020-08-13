@@ -1,5 +1,7 @@
 package com.depromeet.buzz.post.domain;
 
+import static com.depromeet.buzz.discount.domain.Step.*;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +18,7 @@ import javax.persistence.OneToMany;
 
 import com.depromeet.buzz.category.domain.Category;
 import com.depromeet.buzz.discount.domain.Discount;
+import com.depromeet.buzz.discount.domain.Step;
 import com.depromeet.buzz.participation.domain.Participation;
 import com.depromeet.buzz.user.domain.User;
 
@@ -55,14 +58,33 @@ public class Post {
 
 	private Post() {}
 
-	public Post(String productName, int price, String thumbnail,
-		String detailPage, Date regDate, Date closingDate) {
+	public Post(String productName, int price, String thumbnail, String detailPage
+		, Date regDate, Date closingDate, Category category, User user,
+		List<Discount> discounts, List<Participation> participations) {
 		this.productName = productName;
 		this.price = price;
 		this.thumbnail = thumbnail;
 		this.detailPage = detailPage;
 		this.regDate = regDate;
 		this.closingDate = closingDate;
+		this.category = category;
+		this.user = user;
+		this.discounts = discounts;
+		this.participations = participations;
+	}
+
+	public int findDiscountRateByUserCount() {
+		int userCount = participations.size();
+
+		Discount discount = findDiscountByUserCount(userCount);
+		return discount == NOT_DISCOUNT ? Step.ZERO.getStep() : discount.getDiscountRate();
+	}
+
+	public Discount findDiscountByUserCount(int userCount) {
+		return discounts.stream()
+			.filter(x -> x.getStepByUserCount(userCount) > Step.ZERO.getStep())
+			.max((x, y) -> ((Integer)x.getStep()).compareTo(y.getStep()))
+			.orElse(NOT_DISCOUNT);
 	}
 
 	@Override
@@ -93,20 +115,6 @@ public class Post {
 			", discounts=" + discounts +
 			", participations=" + participations +
 			'}';
-	}
-
-	public int findDiscountRateByUserCount() {
-		int userCount = participations.size();
-
-		Discount discount = findDiscountByUserCount(userCount);
-		return discount == null ? 0 : discount.getDiscountRate();
-	}
-
-	public Discount findDiscountByUserCount(int userCount) {
-		return discounts.stream()
-			.filter(x -> x.getStepByUserCount(userCount) > 0)
-			.max((x, y) -> ((Integer)x.getStep()).compareTo(y.getStep()))
-			.orElse(null);
 	}
 
 }
