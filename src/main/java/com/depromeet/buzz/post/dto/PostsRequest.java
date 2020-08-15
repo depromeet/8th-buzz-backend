@@ -1,9 +1,7 @@
 package com.depromeet.buzz.post.dto;
 
-import jdk.internal.jline.internal.Nullable;
 
 public class PostsRequest {
-    @Nullable
     private String category;
 
     private String sortOption;
