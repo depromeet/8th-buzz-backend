@@ -1,6 +1,8 @@
 package com.depromeet.buzz.discount.domain;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -22,19 +24,15 @@ class DiscountTest {
 	@Test
 	@DisplayName("할인되는 목표 인원수에 도달했는지")
 	void getStepByUserCount() {
-		// 인원수 미달로 결과가 Step.ZERO
-		assertAll(
-			() -> assertEquals(Step.ZERO.getStep(), discount1.getStepByUserCount(0)),
-			() -> assertEquals(Step.ZERO.getStep(), discount2.getStepByUserCount(2)),
-			() -> assertEquals(Step.ZERO.getStep(), discount3.getStepByUserCount(4))
-		);
+		// 인원수 미달
+		assertThat(discount1.isNotZeroStep(0), is(equalTo( false)));
+		assertThat(discount2.isNotZeroStep(2), is(equalTo( false)));
+		assertThat(discount3.isNotZeroStep(4), is(equalTo( false)));
 
 		// 할인되는 인원수 달성
-		assertAll(
-			() -> assertEquals(Step.FIRST.getStep(), discount1.getStepByUserCount(1)),
-			() -> assertEquals(Step.SECOND.getStep(), discount2.getStepByUserCount(3)),
-			() -> assertEquals(Step.THIRD.getStep(), discount3.getStepByUserCount(5))
-		);
+		assertThat(discount1.isNotZeroStep(1), is(equalTo( true)));
+		assertThat(discount2.isNotZeroStep(3), is(equalTo( true)));
+		assertThat(discount3.isNotZeroStep(5), is(equalTo( true)));
 	}
 
 }

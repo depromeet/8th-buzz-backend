@@ -5,6 +5,7 @@ import static com.depromeet.buzz.discount.domain.Step.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +19,6 @@ import javax.persistence.OneToMany;
 
 import com.depromeet.buzz.category.domain.Category;
 import com.depromeet.buzz.discount.domain.Discount;
-import com.depromeet.buzz.discount.domain.Step;
 import com.depromeet.buzz.participation.domain.Participation;
 import com.depromeet.buzz.user.domain.User;
 
@@ -75,16 +75,17 @@ public class Post {
 
 	public int findDiscountRateByUserCount() {
 		int userCount = participations.size();
-
-		Discount discount = findDiscountByUserCount(userCount);
-		return discount == NOT_DISCOUNT ? Step.ZERO.getStep() : discount.getDiscountRate();
+		Optional<Discount> discount = findDiscountByUserCount(userCount);
+		if(discount.isPresent()) {
+			return discount.get().getStep();
+		}
+		return ZERO.getStep();
 	}
 
-	public Discount findDiscountByUserCount(int userCount) {
+	public Optional<Discount> findDiscountByUserCount(int userCount) {
 		return discounts.stream()
-			.filter(x -> x.getStepByUserCount(userCount) > Step.ZERO.getStep())
-			.max((x, y) -> ((Integer)x.getStep()).compareTo(y.getStep()))
-			.orElse(NOT_DISCOUNT);
+			.filter(x -> x.isNotZeroStep(userCount))
+			.max((x, y) -> ((Integer)x.getStep()).compareTo(y.getStep()));
 	}
 
 	@Override

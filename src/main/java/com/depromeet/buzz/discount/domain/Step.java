@@ -8,8 +8,6 @@ public enum Step {
 
 	private int step;
 
-	public static final Discount NOT_DISCOUNT = null;
-
 	private Step(int step) {
 		this.step = step;
 	}

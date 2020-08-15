@@ -34,9 +34,13 @@ public class Participation {
 
 	private Participation() {}
 
-	public Participation(User user, Post post) {
+	private Participation(User user, Post post) {
 		this.user = user;
 		this.post = post;
+	}
+
+	public static Participation participate(User user, Post post) {
+		return new Participation(user, post);
 	}
 
 	@Override

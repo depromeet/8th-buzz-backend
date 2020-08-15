@@ -55,12 +55,12 @@ public class Discount {
 		return discountRate;
 	}
 
-	public int getStepByUserCount(int userCount) {
+	public boolean isNotZeroStep(int userCount) {
 		if(this.getInterval() <= userCount) {
-			return this.getStep();
+			return true;
 		}
 
-		return Step.ZERO.getStep();
+		return false;
 	}
 
 	@Override
