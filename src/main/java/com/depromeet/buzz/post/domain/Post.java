@@ -75,8 +75,9 @@ public class Post {
 
 	public int findDiscountRateByUserCount() {
 		int userCount = participations.size();
-		Discount discount = findDiscountByUserCount(userCount).orElseGet(null);
-		return discount == null ? ZERO.getStep() : discount.getDiscountRate();
+		return findDiscountByUserCount(userCount)
+			.map(Discount::getStep)
+			.orElseGet(ZERO::getStep);
 	}
 
 	public Optional<Discount> findDiscountByUserCount(int userCount) {
