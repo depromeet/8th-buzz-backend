@@ -18,14 +18,14 @@ public class CommentResponses {
 
     public static CommentResponses mock() {
         List<CommentResponse> comments = new ArrayList<>();
-        comments.add(CommentResponse.mock(1L, "1", Arrays.asList(
-            CommentResponse.mock(2L, "2", new ArrayList<>()),
-            CommentResponse.mock(3L, "3", new ArrayList<>()),
-            CommentResponse.mock(4L, "4", new ArrayList<>()))));
-        comments.add(CommentResponse.mock(5L, "5", Arrays.asList(
-            CommentResponse.mock(6L, "6", new ArrayList<>()),
-            CommentResponse.mock(7L, "7", new ArrayList<>()))));
-        comments.add(CommentResponse.mock(8L, "8", new ArrayList<>()));
+        comments.add(CommentResponse.mock(1L, 20, "1", true, Arrays.asList(
+                CommentResponse.mock(2L, 2, "2", true, new ArrayList<>()),
+                CommentResponse.mock(3L, 3, "3", false, new ArrayList<>()),
+                CommentResponse.mock(4L, 4, "4", true, new ArrayList<>()))));
+        comments.add(CommentResponse.mock(5L, 5, "5", true, Arrays.asList(
+                CommentResponse.mock(6L, 6, "6", false, new ArrayList<>()),
+                CommentResponse.mock(7L, 7, "7", false, new ArrayList<>()))));
+        comments.add(CommentResponse.mock(8L, 8, "8", false, new ArrayList<>()));
         return new CommentResponses(8, comments);
     }
 
