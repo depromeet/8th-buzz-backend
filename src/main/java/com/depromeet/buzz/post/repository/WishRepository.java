@@ -10,8 +10,8 @@ import com.depromeet.buzz.post.domain.Wish;
 @Repository
 public interface WishRepository extends JpaRepository<Wish, Long> {
 
-	public Optional<Wish> findByUserIdAndPostId(Long userId, Long postId);
+	Optional<Wish> findByUserIdAndPostId(Long userId, Long postId);
 
-	public int deleteByUserIdAndPostId(Long userId, Long postId);
+	int deleteByUserIdAndPostId(Long userId, Long postId);
 
 }

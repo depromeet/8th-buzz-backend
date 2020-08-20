@@ -7,5 +7,5 @@ import com.depromeet.buzz.user.domain.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	public User findByUserId(String userId);
+	User findByUserId(String userId);
 }
