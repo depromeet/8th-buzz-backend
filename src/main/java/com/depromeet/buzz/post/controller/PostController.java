@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
 
-    private PostService postService;
-    private UserService userService;
+    private final PostService postService;
+    private final UserService userService;
 
     public PostController(PostService postService, UserService userService) {
         this.postService = postService;
@@ -111,12 +110,10 @@ public class PostController {
     public ResponseEntity<Boolean> like(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
         User user = userService.findByUserId(userId);
 
-        try {
-            postService.like(user, postId);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.ok(false);
+        if(postService.like(user, postId)) {
+            return ResponseEntity.ok(true);
         }
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(false);
     }
 
 }
