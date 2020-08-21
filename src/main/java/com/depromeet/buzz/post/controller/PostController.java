@@ -1,6 +1,9 @@
 package com.depromeet.buzz.post.controller;
 
 import com.depromeet.buzz.post.dto.*;
+import com.depromeet.buzz.post.service.PostService;
+import com.depromeet.buzz.user.domain.User;
+import com.depromeet.buzz.user.service.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -18,6 +21,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
+
+    private final PostService postService;
+    private final UserService userService;
+
+    public PostController(PostService postService, UserService userService) {
+        this.postService = postService;
+        this.userService = userService;
+    }
 
     @GetMapping
     @ApiResponse(description = "게시글의 옵션에 따른 정보를 가져온다(페이징)")
@@ -96,7 +107,13 @@ public class PostController {
     @Parameters(value = {
             @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
-    public ResponseEntity<Boolean> like(@PathVariable Long postId) {
-        return ResponseEntity.ok(true);
+    public ResponseEntity<Boolean> like(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
+        User user = userService.findByUserId(userId);
+
+        if(postService.like(user, postId)) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
     }
+
 }
