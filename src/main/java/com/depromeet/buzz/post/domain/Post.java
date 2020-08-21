@@ -39,7 +39,7 @@ public class Post extends BasicEntity {
 
 	private String detailPage;
 
-	private Date regDate;
+	private int goal;
 
 	private Date closingDate;
 
@@ -60,13 +60,13 @@ public class Post extends BasicEntity {
 	private Post() {}
 
 	public Post(String productName, int price, String thumbnail, String detailPage
-		, Date regDate, Date closingDate, Category category, User user,
+		, int goal, Date closingDate, Category category, User user,
 		List<Discount> discounts, List<Participation> participations) {
 		this.productName = productName;
 		this.price = price;
 		this.thumbnail = thumbnail;
 		this.detailPage = detailPage;
-		this.regDate = regDate;
+		this.goal = goal;
 		this.closingDate = closingDate;
 		this.category = category;
 		this.user = user;
@@ -87,7 +87,51 @@ public class Post extends BasicEntity {
 			.max((x, y) -> ((Integer)x.getStep()).compareTo(y.getStep()));
 	}
 
-	@Override
+    public Long getId() {
+        return id;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public String getDetailPage() {
+        return detailPage;
+    }
+
+    public int getGoal() {
+        return goal;
+    }
+
+    public Date getClosingDate() {
+        return closingDate;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public List<Discount> getDiscounts() {
+        return discounts;
+    }
+
+    public List<Participation> getParticipations() {
+        return participations;
+    }
+
+    @Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
@@ -100,21 +144,20 @@ public class Post extends BasicEntity {
 		return Objects.hash(id);
 	}
 
-	@Override
-	public String toString() {
-		return "Post{" +
-			"id=" + id +
-			", productName='" + productName + '\'' +
-			", price=" + price +
-			", thumbnail='" + thumbnail + '\'' +
-			", detailPage='" + detailPage + '\'' +
-			", regDate=" + regDate +
-			", closingDate=" + closingDate +
-			", category=" + category +
-			", user=" + user +
-			", discounts=" + discounts +
-			", participations=" + participations +
-			'}';
-	}
-
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", productName='" + productName + '\'' +
+                ", price=" + price +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", detailPage='" + detailPage + '\'' +
+                ", goal=" + goal +
+                ", closingDate=" + closingDate +
+                ", category=" + category +
+                ", user=" + user +
+                ", discounts=" + discounts +
+                ", participations=" + participations +
+                '}';
+    }
 }
