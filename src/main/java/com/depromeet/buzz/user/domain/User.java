@@ -17,16 +17,19 @@ public class User extends BasicEntity {
 
     private String name;
 
+    private String thumbnail;
+
     private User() {
     }
 
-    public User(String userId, String name) {
+    public User(String userId, String name, String thumbnail) {
         if (Objects.isNull(userId) || userId.trim().isEmpty()) {
             throw new IllegalArgumentException("userId is empty");
         }
 
         this.userId = userId;
         this.name = name;
+        this.thumbnail = thumbnail;
     }
 
     public Long getId() {
@@ -39,6 +42,10 @@ public class User extends BasicEntity {
 
     public String getName() {
         return name;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
     }
 
     @Override
