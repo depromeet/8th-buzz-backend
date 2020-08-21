@@ -47,6 +47,10 @@ public class Comment {
         this.parentComment = parentComment;
     }
 
+    public boolean isEnableDelete(User user) {
+        return this.user.equals(user);
+    }
+
     public Long getId() {
         return Id;
     }
