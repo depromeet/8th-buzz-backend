@@ -1,6 +1,7 @@
 package com.depromeet.buzz.comment.controller;
 
 import com.depromeet.buzz.comment.dto.CommentCreateRequest;
+import com.depromeet.buzz.comment.service.CommentService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -17,6 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/comments")
 public class CommentController {
 
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
     @PostMapping
     @ApiResponse(description = "댓글 생성")
     @Parameters(value = {
@@ -26,6 +33,7 @@ public class CommentController {
         @Parameter(name = "content", description = "댓글 내용")
     })
     public ResponseEntity<Void> create(@RequestBody CommentCreateRequest request) {
+        commentService.create(request);
         return ResponseEntity.ok().build();
     }
 
