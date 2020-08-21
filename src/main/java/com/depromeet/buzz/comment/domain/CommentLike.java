@@ -1,11 +1,12 @@
 package com.depromeet.buzz.comment.domain;
 
+import com.depromeet.buzz.common.domain.BasicEntity;
 import com.depromeet.buzz.user.domain.User;
 
 import javax.persistence.*;
 
 @Entity
-public class CommentLike {
+public class CommentLike extends BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

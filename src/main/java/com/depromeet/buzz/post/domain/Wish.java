@@ -7,10 +7,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.depromeet.buzz.common.domain.BasicEntity;
 import com.depromeet.buzz.user.domain.User;
 
 @Entity
-public class Wish {
+public class Wish extends BasicEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
