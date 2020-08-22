@@ -20,7 +20,7 @@ public class Category extends BasicEntity {
 	@Column(unique = true, nullable = false)
 	private String name;
 
-	private Category() { }
+	public Category() { }
 
 	public Category(String name) {
 		if(Objects.isNull(name) || name.trim().isEmpty()) {

@@ -2,7 +2,11 @@ package com.depromeet.buzz.user.domain;
 
 import com.depromeet.buzz.common.domain.BasicEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -19,7 +23,7 @@ public class User extends BasicEntity {
 
     private String thumbnail;
 
-    private User() {
+    public User() {
     }
 
     public User(String userId, String name, String thumbnail) {
@@ -63,9 +67,11 @@ public class User extends BasicEntity {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id +
-                ", userId='" + userId + '\'' +
-                ", name='" + name + '\'' + '}';
+        return "User{" +
+            "id=" + id +
+            ", userId='" + userId + '\'' +
+            ", name='" + name + '\'' +
+            ", thumbnail='" + thumbnail + '\'' +
+            '}';
     }
-
 }

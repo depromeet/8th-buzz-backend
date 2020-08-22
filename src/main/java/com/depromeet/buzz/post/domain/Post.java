@@ -57,7 +57,7 @@ public class Post extends BasicEntity {
 	@OneToMany(mappedBy = "post")
 	private List<Participation> participations;
 
-	private Post() {}
+	public Post() {}
 
 	public Post(String productName, int price, String thumbnail, String detailPage
 		, int goal, Date closingDate, Category category, User user,
@@ -144,20 +144,16 @@ public class Post extends BasicEntity {
 		return Objects.hash(id);
 	}
 
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", productName='" + productName + '\'' +
-                ", price=" + price +
-                ", thumbnail='" + thumbnail + '\'' +
-                ", detailPage='" + detailPage + '\'' +
-                ", goal=" + goal +
-                ", closingDate=" + closingDate +
-                ", category=" + category +
-                ", user=" + user +
-                ", discounts=" + discounts +
-                ", participations=" + participations +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Post{" +
+			"id=" + id +
+			", productName='" + productName + '\'' +
+			", price=" + price +
+			", thumbnail='" + thumbnail + '\'' +
+			", detailPage='" + detailPage + '\'' +
+			", goal=" + goal +
+			", closingDate=" + closingDate +
+			'}';
+	}
 }

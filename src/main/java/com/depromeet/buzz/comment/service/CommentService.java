@@ -4,14 +4,22 @@ import com.depromeet.buzz.comment.domain.Comment;
 import com.depromeet.buzz.comment.dto.CommentCreateRequest;
 import com.depromeet.buzz.comment.repository.CommentRepository;
 import com.depromeet.buzz.post.domain.Post;
+import com.depromeet.buzz.post.dto.CommentResponse;
 import com.depromeet.buzz.post.service.PostService;
 import com.depromeet.buzz.user.domain.User;
 import com.depromeet.buzz.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.depromeet.buzz.comment.domain.CommentLike;
 import com.depromeet.buzz.comment.repository.CommentLikeRepository;
 
@@ -24,7 +32,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    public CommentService(UserService userService, PostService postService, 
+    public CommentService(UserService userService, PostService postService,
                           CommentRepository commentRepository, CommentLikeRepository commentLikeRepository) {
         this.userService = userService;
         this.postService = postService;
@@ -60,7 +68,7 @@ public class CommentService {
         }
         commentRepository.delete(comment);
     }
-  
+
     public boolean like(User user, Long commentId) {
         Optional<CommentLike> commentLike = commentLikeRepository.findByUserIdAndCommentId(user.getId(), commentId);
 		    if(commentLike.isPresent()) {
@@ -75,4 +83,12 @@ public class CommentService {
 		      return false;
 	   }
 
+    public Page<CommentResponse> findCommentsByPostId(Long postId, Pageable pageable) {
+        Page<Comment> comments = commentRepository.findCommentsByPostId(postId, pageable);
+        List<CommentResponse> commentResponses = comments.getContent().stream()
+            .map(CommentResponse::from)
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(commentResponses, pageable, comments.getTotalElements());
+    }
 }

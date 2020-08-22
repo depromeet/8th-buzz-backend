@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 import com.depromeet.buzz.common.domain.BasicEntity;
 import com.depromeet.buzz.user.domain.User;
 
+import java.util.Objects;
+
 @Entity
 public class Wish extends BasicEntity {
 
@@ -23,7 +25,7 @@ public class Wish extends BasicEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Post post;
 
-	private Wish() {
+	public Wish() {
 	}
 
 	public Wish(User user, Post post) {
@@ -31,4 +33,16 @@ public class Wish extends BasicEntity {
 		this.post = post;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Wish wish = (Wish) o;
+		return Objects.equals(Id, wish.Id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(Id);
+	}
 }
