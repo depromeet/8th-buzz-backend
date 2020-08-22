@@ -88,11 +88,11 @@ public class Comment extends BasicEntity {
     @Override
     public String toString() {
         return "Comment{" +
-                "Id=" + Id +
-                ", comment='" + comment + '\'' +
-                ", user=" + user +
-                ", subComments=" + subComments +
-                ", parentComment=" + parentComment +
-                '}';
+            "Id=" + Id +
+            ", comment='" + comment + '\'' +
+            ", user=" + user +
+            ", subComments=" + subComments +
+            ", parentComment=" + parentComment +
+            '}';
     }
 }
