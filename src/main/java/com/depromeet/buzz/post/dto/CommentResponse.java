@@ -56,6 +56,43 @@ public class CommentResponse {
         );
     }
 
+    public static CommentResponse from(Comment comment) {
+        boolean isLiked = comment.getCommentLikes().stream()
+            .anyMatch(commentLike -> commentLike.isAuthor(comment.getUser()));
+
+        return new CommentResponse(
+            comment.getId(),
+            comment.getComment(),
+            Author.from(comment.getUser()),
+            comment.getCommentLikes().size(),
+            comment.getSubComments() == null ? 0 : comment.getSubComments().size(),
+            comment.getCreatedDate(),
+            isLiked,
+            comment.getSubComments() == null
+                ? new ArrayList<>()
+                : comment.getSubComments().stream().map(CommentResponse::from).collect(Collectors.toList())
+        );
+
+    }
+
+    public static CommentResponse getPreviewComment(Comment comment) {
+        boolean isLiked = comment.getCommentLikes().stream()
+            .anyMatch(commentLike -> commentLike.isAuthor(comment.getUser()));
+
+        return new CommentResponse(
+            comment.getId(),
+            comment.getComment(),
+            Author.from(comment.getUser()),
+            comment.getCommentLikes().size(),
+            comment.getSubComments() == null ? 0 : comment.getSubComments().size(),
+            comment.getCreatedDate(),
+            isLiked,
+            comment.getSubComments() == null
+                ? new ArrayList<>()
+                : comment.getSubComments().subList(0, getCommentsSize(comment.getSubComments())).stream().map(CommentResponse::getPreviewComment).collect(Collectors.toList())
+        );
+    }
+
     public Long getCommentId() {
         return commentId;
     }
@@ -86,24 +123,6 @@ public class CommentResponse {
 
     public List<CommentResponse> getComments() {
         return comments;
-    }
-
-    public static CommentResponse from(Comment comment) {
-        boolean isLiked = comment.getCommentLikes().stream()
-            .anyMatch(commentLike -> commentLike.isAuthor(comment.getUser()));
-
-        return new CommentResponse(
-            comment.getId(),
-            comment.getComment(),
-            Author.from(comment.getUser()),
-            comment.getCommentLikes().size(),
-            comment.getSubComments() == null ? 0 : comment.getSubComments().size(),
-            comment.getCreatedDate(),
-            isLiked,
-            comment.getSubComments() == null
-                ? new ArrayList<>()
-                : comment.getSubComments().subList(0, getCommentsSize(comment.getSubComments())).stream().map(CommentResponse::from).collect(Collectors.toList())
-        );
     }
 
     private static int getCommentsSize(List<Comment> subComments) {

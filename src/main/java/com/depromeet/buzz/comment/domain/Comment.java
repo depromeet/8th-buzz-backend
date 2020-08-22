@@ -97,6 +97,10 @@ public class Comment extends BasicEntity {
         return parentComment;
     }
 
+    public boolean hasParent() {
+        return this.parentComment != null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
