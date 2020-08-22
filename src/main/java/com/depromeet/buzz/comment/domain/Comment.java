@@ -13,14 +13,16 @@ public class Comment extends BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
@@ -53,7 +55,7 @@ public class Comment extends BasicEntity {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public String getComment() {
@@ -77,18 +79,18 @@ public class Comment extends BasicEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(Id, comment.Id);
+        return Objects.equals(id, comment.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "Comment{" +
-            "Id=" + Id +
+            "Id=" + id +
             ", comment='" + comment + '\'' +
             ", user=" + user +
             ", subComments=" + subComments +
