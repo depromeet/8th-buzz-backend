@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implements PostRepositoryCustom {
@@ -22,7 +23,9 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     @Override
     public Page<Post> findPosts(PostsRequest request, Pageable pageable) {
         QPost post = QPost.post;
-        BooleanExpression ex = post.productName.contains(request.getKeyword());
+        BooleanExpression ex = post.productName.contains(request.getKeyword())
+            .and(post.closingDate.after(LocalDateTime.now()).or(post.closingDate.eq(LocalDateTime.now())));
+
 
         if (request.getCategory() != null && request.getCategory().length() != 0) {
             ex = ex.and(post.category.name.eq(request.getCategory()));
