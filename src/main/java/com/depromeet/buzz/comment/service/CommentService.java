@@ -10,22 +10,27 @@ import com.depromeet.buzz.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
-
 import java.util.Objects;
+import java.util.Optional;
+import com.depromeet.buzz.comment.domain.CommentLike;
+import com.depromeet.buzz.comment.repository.CommentLikeRepository;
 
 @Service
 @Transactional
 public class CommentService {
+
     private final UserService userService;
     private final PostService postService;
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
-    public CommentService(UserService userService, PostService postService, CommentRepository commentRepository) {
+    public CommentService(UserService userService, PostService postService, 
+                          CommentRepository commentRepository, CommentLikeRepository commentLikeRepository) {
         this.userService = userService;
         this.postService = postService;
         this.commentRepository = commentRepository;
+        this.commentLikeRepository = commentLikeRepository;
     }
-
 
     private Comment findById(Long commentId) {
         return commentRepository.findById(commentId)
@@ -55,4 +60,19 @@ public class CommentService {
         }
         commentRepository.delete(comment);
     }
+  
+    public boolean like(User user, Long commentId) {
+        Optional<CommentLike> commentLike = commentLikeRepository.findByUserIdAndCommentId(user.getId(), commentId);
+		    if(commentLike.isPresent()) {
+			      return commentLikeRepository.deleteByUserIdAndCommentId(user.getId(), commentId) == 1;
+		     }
+
+		     Optional<Comment> comment = commentRepository.findById(commentId);
+		     if(comment.isPresent()) {
+			      return commentLikeRepository.save(new CommentLike(user, comment.get())) != null;
+		     }
+
+		      return false;
+	   }
+
 }
