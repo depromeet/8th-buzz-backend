@@ -12,10 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.depromeet.buzz.common.domain.BasicEntity;
 import com.depromeet.buzz.post.domain.Post;
 
 @Entity
-public class Discount {
+public class Discount extends BasicEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +29,7 @@ public class Discount {
 	@Enumerated(value = EnumType.STRING)
 	private Step step;
 
-	private int interval;
+	private int minRequire;
 
 	private int discountRate;
 
@@ -39,12 +40,12 @@ public class Discount {
 	public Discount(Post post, Step step, int interval, int discountRate) {
 		this.post = post;
 		this.step = step;
-		this.interval = interval;
+		this.minRequire = interval;
 		this.discountRate = discountRate;
 	}
 
-	public int getInterval() {
-		return interval;
+	public int getMinRequire() {
+		return minRequire;
 	}
 
 	public int getStep() {
@@ -56,7 +57,7 @@ public class Discount {
 	}
 
 	public boolean isNotZeroStep(int userCount) {
-		if(this.getInterval() <= userCount) {
+		if(this.getMinRequire() <= userCount) {
 			return true;
 		}
 
@@ -82,7 +83,7 @@ public class Discount {
 			"id=" + id +
 			", post=" + post +
 			", step=" + step +
-			", interval=" + interval +
+			", minRequire=" + minRequire +
 			", discountRate=" + discountRate +
 			'}';
 	}

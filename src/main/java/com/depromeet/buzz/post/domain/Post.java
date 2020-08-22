@@ -18,12 +18,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.depromeet.buzz.category.domain.Category;
+import com.depromeet.buzz.common.domain.BasicEntity;
 import com.depromeet.buzz.discount.domain.Discount;
 import com.depromeet.buzz.participation.domain.Participation;
 import com.depromeet.buzz.user.domain.User;
 
 @Entity
-public class Post {
+public class Post extends BasicEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

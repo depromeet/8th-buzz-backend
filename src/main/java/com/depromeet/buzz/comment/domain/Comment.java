@@ -1,5 +1,6 @@
 package com.depromeet.buzz.comment.domain;
 
+import com.depromeet.buzz.common.domain.BasicEntity;
 import com.depromeet.buzz.post.domain.Post;
 import com.depromeet.buzz.user.domain.User;
 
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Comment {
+public class Comment extends BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

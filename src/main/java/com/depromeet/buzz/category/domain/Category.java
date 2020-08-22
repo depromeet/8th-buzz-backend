@@ -1,5 +1,7 @@
 package com.depromeet.buzz.category.domain;
 
+import com.depromeet.buzz.common.domain.BasicEntity;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -9,7 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Category {
+public class Category extends BasicEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
