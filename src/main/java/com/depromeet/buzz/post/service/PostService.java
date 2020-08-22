@@ -4,6 +4,8 @@ import com.depromeet.buzz.participation.domain.Participation;
 import com.depromeet.buzz.participation.repository.ParticipationRepository;
 import com.depromeet.buzz.post.domain.Post;
 import com.depromeet.buzz.post.domain.Wish;
+import com.depromeet.buzz.post.dto.PostDescriptionResponse;
+import com.depromeet.buzz.post.dto.PostSellerResponse;
 import com.depromeet.buzz.post.repository.PostRepository;
 import com.depromeet.buzz.post.repository.WishRepository;
 import com.depromeet.buzz.user.domain.User;
@@ -59,5 +61,21 @@ public class PostService {
         Post post = findById(postId);
         Participation participation = Participation.participate(user, post);
         participationRepository.save(participation);
+    }
+
+    public String getContent(Long postId) {
+        Post post = findById(postId);
+        return post.getDetailPage();
+    }
+
+    public PostSellerResponse getSeller(Long postId) {
+        Post post = findById(postId);
+        User user = post.getUser();
+        return PostSellerResponse.from(user);
+    }
+
+    public PostDescriptionResponse getDescription(Long postId) {
+        Post post = findById(postId);
+        return PostDescriptionResponse.from(post);
     }
 }

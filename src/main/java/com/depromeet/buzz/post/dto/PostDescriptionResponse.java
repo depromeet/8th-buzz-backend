@@ -1,11 +1,15 @@
 package com.depromeet.buzz.post.dto;
 
+import com.depromeet.buzz.discount.domain.Discount;
+import com.depromeet.buzz.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PostDescriptionResponse {
     private Long id;
@@ -43,6 +47,25 @@ public class PostDescriptionResponse {
         this.participants = participants;
         this.numberOfGoal = numberOfGoal;
         this.deadline = deadline;
+    }
+
+    public static PostDescriptionResponse from(Post post) {
+        com.depromeet.buzz.discount.domain.Discount nowDiscount =
+            post.findDiscountByUserCount(post.getParticipations().size())
+            .orElse(null);
+        com.depromeet.buzz.discount.domain.Discount nextDiscount = post.getNextDiscount();
+        return new PostDescriptionResponse(
+            post.getId(),
+            post.getProductName(),
+            post.getCategory().getName(),
+            post.getPrice(),
+            Discount.from(nowDiscount),
+            Discount.from(nextDiscount),
+            post.getDiscounts().stream().map(Discount::from).collect(Collectors.toList()),
+            post.getParticipations().size(),
+            post.getGoal(),
+            post.getCreatedDate()
+        );
     }
 
     public Long getId() {
@@ -114,6 +137,26 @@ public class PostDescriptionResponse {
             this.step = step;
             this.numberOfPeople = numberOfPeople;
             this.discountPercent = discountPercent;
+        }
+
+        public static Discount from(com.depromeet.buzz.discount.domain.Discount discount) {
+            if (discount == null) {
+                return none();
+            }
+
+            return new Discount(
+                discount.getStep(),
+                discount.getMinRequire(),
+                discount.getDiscountRate()
+            );
+        }
+
+        private static Discount none() {
+            return new Discount(
+                99999,
+                99999,
+                99999
+            );
         }
 
         public int getStep() {

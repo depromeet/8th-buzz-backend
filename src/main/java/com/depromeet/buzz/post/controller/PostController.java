@@ -84,7 +84,7 @@ public class PostController {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
     public ResponseEntity<PostDescriptionResponse> getPostDescription(@PathVariable Long postId) {
-        return ResponseEntity.ok(PostDescriptionResponse.mock());
+        return ResponseEntity.ok(postService.getDescription(postId));
     }
 
     @GetMapping("{postId}/seller")
@@ -93,7 +93,7 @@ public class PostController {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
     public ResponseEntity<PostSellerResponse> getSeller(@PathVariable Long postId) {
-        return ResponseEntity.ok(PostSellerResponse.mock());
+        return ResponseEntity.ok(postService.getSeller(postId));
     }
 
 
@@ -103,7 +103,7 @@ public class PostController {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
     public ResponseEntity<String> getContent(@PathVariable Long postId) {
-        return ResponseEntity.ok("https://files.slack.com/files-pri/T01753WJ8H1-F01916BREKE/image.png");
+        return ResponseEntity.ok(postService.getContent(postId));
     }
 
 
@@ -142,7 +142,7 @@ public class PostController {
     }
 
     @PostMapping("{postId}/participate")
-    @ApiResponse(description = "제품에 대한 좋아요 토글")
+    @ApiResponse(description = "제품 참여")
     @Parameters(value = {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })

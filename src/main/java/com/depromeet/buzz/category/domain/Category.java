@@ -30,6 +30,14 @@ public class Category extends BasicEntity {
 		this.name = name;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
