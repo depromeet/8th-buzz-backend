@@ -78,4 +78,9 @@ public class PostService {
         Post post = findById(postId);
         return PostDescriptionResponse.from(post);
     }
+
+    public String getBanner(Long postId) {
+        Post post = findById(postId);
+        return post.getThumbnail();
+    }
 }

@@ -75,7 +75,7 @@ public class PostController {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
     public ResponseEntity<String> getPostBanner(@PathVariable Long postId) {
-        return ResponseEntity.ok("https://fs.jtbc.joins.com/prog/img/mig/MOBILE/PR10010297.jpg");
+        return ResponseEntity.ok(postService.getBanner(postId));
     }
 
     @GetMapping("{postId}/description")
