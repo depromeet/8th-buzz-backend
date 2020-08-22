@@ -22,7 +22,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
-    @OneToMany(mappedBy = "parentComment")
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
     private List<Comment> subComments;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,13 +31,11 @@ public class Comment {
     private Comment() {
     }
 
-    /**
-     * 최상위 댓글 생성 시 사용 : 부모 댓글이 없다
-     */
-    public Comment(String comment, User user) {
+    public Comment(String comment, User user, Post post) {
         validate(comment, user);
         this.comment = comment;
         this.user = user;
+        this.post = post;
     }
 
     private void validate(String comment, User user) {
@@ -45,20 +43,12 @@ public class Comment {
         Objects.requireNonNull(user, "사용자가 없습니다.");
     }
 
-    /**
-     * 대댓글 생성 시 사용 : 부모 댓글 필수
-     */
-    public Comment(String comment, User user, Comment parentComment) {
-        validate(comment, user, parentComment);
-        this.comment = comment;
-        this.user = user;
+    public void addParent(Comment parentComment) {
         this.parentComment = parentComment;
     }
 
-    private void validate(String comment, User user, Comment parentComment) {
-        Objects.requireNonNull(comment, "코멘트가 없습니다.");
-        Objects.requireNonNull(user, "사용자가 없습니다.");
-        Objects.requireNonNull(parentComment, "상위 코멘트를 찾을 수 없습니다.");
+    public boolean isEnableDelete(User user) {
+        return this.user.equals(user);
     }
 
     public Long getId() {

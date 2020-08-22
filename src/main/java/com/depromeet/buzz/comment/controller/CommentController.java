@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {
-
+  
     private final UserService userService;
     private final CommentService commentService;
 
@@ -32,28 +32,30 @@ public class CommentController {
     @PostMapping
     @ApiResponse(description = "댓글 생성")
     @Parameters(value = {
-        @Parameter(name = "postId", description = "게시글 id"),
-        @Parameter(name = "commentId", description = "댓글 id 대댓글인 경우 필수"),
-        @Parameter(name = "userId", description = "유저 id"),
-        @Parameter(name = "content", description = "댓글 내용")
+            @Parameter(name = "postId", description = "게시글 id"),
+            @Parameter(name = "commentId", description = "댓글 id 대댓글인 경우 필수"),
+            @Parameter(name = "userId", description = "유저 id"),
+            @Parameter(name = "content", description = "댓글 내용")
     })
     public ResponseEntity<Void> create(@RequestBody CommentCreateRequest request) {
+        commentService.create(request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{commentId}")
     @ApiResponse(description = "댓글 삭제")
     @Parameters(value = {
-        @Parameter(name = "commentId", description = "댓글 id", in = ParameterIn.PATH)
+            @Parameter(name = "commentId", description = "댓글 id", in = ParameterIn.PATH)
     })
-    public ResponseEntity<Void> delete(@PathVariable Long commentId) {
+    public ResponseEntity<Void> delete(@RequestHeader("User-ID") String userId, @PathVariable Long commentId) {
+        commentService.delete(userId, commentId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("{commentId}/like")
     @ApiResponse(description = "댓글 대한 좋아요 토글")
     @Parameters(value = {
-        @Parameter(name = "commentId", description = "댓글 id", in = ParameterIn.PATH)
+            @Parameter(name = "commentId", description = "댓글 id", in = ParameterIn.PATH)
     })
     public ResponseEntity<Boolean> like(@RequestHeader("User-ID") String userId, @PathVariable Long commentId) {
         User user = userService.findByUserId(userId);
