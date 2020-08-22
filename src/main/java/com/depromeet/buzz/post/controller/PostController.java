@@ -141,4 +141,14 @@ public class PostController {
         return ResponseEntity.ok(false);
     }
 
+    @PostMapping("{postId}/participate")
+    @ApiResponse(description = "제품에 대한 좋아요 토글")
+    @Parameters(value = {
+        @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
+    })
+    public ResponseEntity<Boolean> participate(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
+        postService.participate(userId, postId);
+        return ResponseEntity.ok().build();
+    }
+
 }
