@@ -1,6 +1,9 @@
 package com.depromeet.buzz.comment.controller;
 
 import com.depromeet.buzz.comment.dto.CommentCreateRequest;
+import com.depromeet.buzz.comment.service.CommentService;
+import com.depromeet.buzz.user.domain.User;
+import com.depromeet.buzz.user.service.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -10,12 +13,21 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {
+
+    private final UserService userService;
+    private final CommentService commentService;
+
+    public CommentController(UserService userService, CommentService commentService) {
+        this.userService = userService;
+        this.commentService = commentService;
+    }
 
     @PostMapping
     @ApiResponse(description = "댓글 생성")
@@ -43,8 +55,14 @@ public class CommentController {
     @Parameters(value = {
         @Parameter(name = "commentId", description = "댓글 id", in = ParameterIn.PATH)
     })
-    public ResponseEntity<Boolean> like(@PathVariable Long commentId) {
-        return ResponseEntity.ok(true);
+    public ResponseEntity<Boolean> like(@RequestHeader("User-ID") String userId, @PathVariable Long commentId) {
+        User user = userService.findByUserId(userId);
+
+        if(commentService.like(user, commentId)) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
     }
+
 }
 
