@@ -52,12 +52,8 @@ public class PostController {
         @Parameter(name = "size", description = "원하는 컨텐츠 수 기본은 10", in = ParameterIn.QUERY),
         @Parameter(name = "sortOption", description = "정렬 기준", in = ParameterIn.QUERY)
     })
-    public ResponseEntity<Page<List<PostResponse>>> get(PostsRequest request, @PageableDefault Pageable pageable) {
-        List<PostResponse> responses = new ArrayList<>();
-        for (int i = 0; i < pageable.getPageSize(); i++) {
-            responses.add(PostResponse.mock());
-        }
-        return ResponseEntity.ok(new PageImpl(responses, pageable, 100));
+    public ResponseEntity<Page<PostResponse>> get(PostsRequest request, @PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(postService.findPosts(request,pageable));
     }
 
     @GetMapping("{postId}")

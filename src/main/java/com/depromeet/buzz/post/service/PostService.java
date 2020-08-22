@@ -1,35 +1,48 @@
 package com.depromeet.buzz.post.service;
 
+import com.depromeet.buzz.comment.repository.CommentRepository;
 import com.depromeet.buzz.participation.domain.Participation;
 import com.depromeet.buzz.participation.repository.ParticipationRepository;
 import com.depromeet.buzz.post.domain.Post;
 import com.depromeet.buzz.post.domain.Wish;
 import com.depromeet.buzz.post.dto.PostDescriptionResponse;
+import com.depromeet.buzz.post.dto.PostResponse;
 import com.depromeet.buzz.post.dto.PostSellerResponse;
+import com.depromeet.buzz.post.dto.PostsRequest;
 import com.depromeet.buzz.post.repository.PostRepository;
 import com.depromeet.buzz.post.repository.WishRepository;
 import com.depromeet.buzz.user.domain.User;
 import com.depromeet.buzz.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class PostService {
     private final UserService userService;
     private final ParticipationRepository participationRepository;
+    private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final WishRepository wishRepository;
 
     public PostService(UserService userService,
                        ParticipationRepository participationRepository,
+                       CommentRepository commentRepository,
                        PostRepository postRepository,
                        WishRepository wishRepository) {
         this.userService = userService;
         this.participationRepository = participationRepository;
+        this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.wishRepository = wishRepository;
     }
@@ -54,7 +67,7 @@ public class PostService {
     }
 
     public void participate(String userId, Long postId) {
-        if(participationRepository.existsByUserUserIdAndPostId(userId, postId)) {
+        if (participationRepository.existsByUserUserIdAndPostId(userId, postId)) {
             throw new IllegalArgumentException("이미 참여중입니다.");
         }
         User user = userService.findByUserId(userId);
@@ -82,5 +95,30 @@ public class PostService {
     public String getBanner(Long postId) {
         Post post = findById(postId);
         return post.getThumbnail();
+    }
+
+    public Page<PostResponse> findPosts(PostsRequest request, Pageable pageable) {
+        Page<Post> posts = postRepository.findPosts(request, pageable);
+        List<Long> postIds = posts.getContent().stream()
+            .map(Post::getId)
+            .collect(Collectors.toList());
+        Map<Long, Integer> numberOfCommentByPostIds = getNumberOfCommentByPostIds(postIds);
+
+        List<PostResponse> postResponses = posts.getContent().stream()
+            .map(post -> PostResponse.of(post, numberOfCommentByPostIds))
+            .collect(Collectors.toList());
+        return new PageImpl<>(postResponses, pageable, posts.getTotalElements());
+    }
+
+
+    private Map<Long, Integer> getNumberOfCommentByPostIds(List<Long> postIds) {
+        Map<Long, Integer> numberOfComments = new HashMap<>();
+        postIds
+            .forEach(postId -> {
+                long numberOfComment = commentRepository.countAllByPostId(postId);
+                numberOfComments.put(postId, Math.toIntExact(numberOfComment));
+            });
+
+        return numberOfComments;
     }
 }

@@ -64,7 +64,7 @@ public class PostDescriptionResponse {
             post.getDiscounts().stream().map(Discount::from).collect(Collectors.toList()),
             post.getParticipations().size(),
             post.getGoal(),
-            post.getCreatedDate()
+            post.getClosingDate()
         );
     }
 

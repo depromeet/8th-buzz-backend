@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +41,7 @@ public class Post extends BasicEntity {
 
     private int goal;
 
-    private Date closingDate;
+    private LocalDateTime closingDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -56,11 +57,14 @@ public class Post extends BasicEntity {
     @OneToMany(mappedBy = "post")
     private List<Participation> participations;
 
+    @OneToMany(mappedBy = "post")
+    private List<Wish> wishes;
+
     public Post() {
     }
 
     public Post(String productName, int price, String thumbnail, String detailPage
-        , int goal, Date closingDate, Category category, User user,
+        , int goal, LocalDateTime closingDate, Category category, User user,
                 List<Discount> discounts, List<Participation> participations) {
         this.productName = productName;
         this.price = price;
@@ -125,7 +129,7 @@ public class Post extends BasicEntity {
         return goal;
     }
 
-    public Date getClosingDate() {
+    public LocalDateTime getClosingDate() {
         return closingDate;
     }
 
@@ -143,6 +147,10 @@ public class Post extends BasicEntity {
 
     public List<Participation> getParticipations() {
         return participations;
+    }
+
+    public List<Wish> getWishes() {
+        return wishes;
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.depromeet.buzz.post.dto;
 
+import com.depromeet.buzz.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Map;
 
 public class PostResponse {
     private Long id;
@@ -53,8 +55,45 @@ public class PostResponse {
         this.deadline = deadline;
     }
 
-    public static PostResponse of() {
-        return new PostResponse();
+
+    public static PostResponse of(Post post, Map<Long, Integer> numberOfCommentByPostIds) {
+        com.depromeet.buzz.discount.domain.Discount nowDiscount =
+            post.findDiscountByUserCount(post.getParticipations().size())
+                .orElse(null);
+        com.depromeet.buzz.discount.domain.Discount nextDiscount = post.getNextDiscount();
+        return new PostResponse(
+            post.getId(),
+            post.getThumbnail(),
+            post.getWishes().size(),
+            numberOfCommentByPostIds.get(post.getId()),
+            post.getProductName(),
+            post.getCategory().getName(),
+            post.getUser().getName(),
+            post.getPrice(),
+            Discount.from(nowDiscount),
+            Discount.from(nextDiscount),
+            post.getParticipations().size(),
+            post.getGoal(),
+            post.getClosingDate()
+        );
+    }
+
+    public static PostResponse mock() {
+        return new PostResponse(
+            1L,
+            "https://fs.jtbc.joins.com/prog/img/mig/MOBILE/PR10010297.jpg",
+            100,
+            200,
+            "예이이",
+            "전자",
+            "곽은담",
+            50000,
+            new Discount(1, 100, 35),
+            new Discount(2, 200, 40),
+            130,
+            300,
+            LocalDateTime.of(2020, Month.SEPTEMBER, 10, 23, 59, 59)
+        );
     }
 
     public Long getId() {
@@ -109,24 +148,6 @@ public class PostResponse {
         return deadline;
     }
 
-    public static PostResponse mock() {
-        return new PostResponse(
-            1L,
-            "https://fs.jtbc.joins.com/prog/img/mig/MOBILE/PR10010297.jpg",
-            100,
-            200,
-            "예이이",
-            "전자",
-            "곽은담",
-            50000,
-            new Discount(1, 100, 35),
-            new Discount(2, 200, 40),
-            130,
-            300,
-            LocalDateTime.of(2020, Month.SEPTEMBER, 10, 23, 59, 59)
-        );
-    }
-
     private static class Discount {
         private int step;
         private int numberOfPeople;
@@ -139,6 +160,25 @@ public class PostResponse {
             this.step = step;
             this.numberOfPeople = numberOfPeople;
             this.discountPercent = discountPercent;
+        }
+        public static Discount from(com.depromeet.buzz.discount.domain.Discount discount) {
+            if (discount == null) {
+                return none();
+            }
+
+            return new Discount(
+                discount.getStep(),
+                discount.getMinRequire(),
+                discount.getDiscountRate()
+            );
+        }
+
+        private static Discount none() {
+            return new Discount(
+                99999,
+                99999,
+                99999
+            );
         }
 
         public int getStep() {
