@@ -10,8 +10,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,13 +45,11 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
     }
 
     @Override
-    public List<Comment> findPopularCommentsByPostId(Long postId) {
+    public Map<Comment, Long> findPopularCommentsByPostId(Long postId) {
         QComment comment = QComment.comment1;
         QCommentLike commentLike = QCommentLike.commentLike;
 
-        List<Comment> comments = new ArrayList<>();
-        Map<Comment, Long> map = new HashMap<>();
-
+        Map<Comment, Long> comentsLikeCnt = new HashMap<>();
         from(comment)
             .where(comment.post.id.eq(postId)
                 .and(comment.parentComment.isNull()))
@@ -63,13 +59,10 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 long cnt = from(commentLike)
                     .where(commentLike.comment.id.eq(c.getId()))
                     .fetchCount();
-                map.put(c, cnt);
+                comentsLikeCnt.put(c, cnt);
             });
 
-        List<Comment> keySetList = new ArrayList<>(map.keySet());
-        Collections.sort(keySetList, (o1, o2) -> (map.get(o2).compareTo(map.get(o1))));
-        keySetList.stream().limit(3).forEach(k -> comments.add(k));
-        return comments;
+        return comentsLikeCnt;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.depromeet.buzz.comment.repository;
 
-import java.util.List;
+import java.util.Map;
 
 import com.depromeet.buzz.comment.domain.Comment;
 import org.springframework.data.domain.Page;
@@ -9,5 +9,5 @@ import org.springframework.data.domain.Pageable;
 public interface CommentRepositoryCustom {
     Page<Comment> findCommentsByPostId(Long postId, Pageable pageable);
 
-    List<Comment> findPopularCommentsByPostId(Long postId);
+    Map<Comment, Long> findPopularCommentsByPostId(Long postId);
 }
