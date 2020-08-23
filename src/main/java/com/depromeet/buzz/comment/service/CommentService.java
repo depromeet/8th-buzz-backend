@@ -45,7 +45,7 @@ public class CommentService {
             .orElseThrow(() -> new NotFoundException(String.format("댓글이 존재하지 않습니다. commentId : %s", commentId)));
     }
 
-    public void create(CommentCreateRequest request) {
+    public CommentResponse create(CommentCreateRequest request) {
         User user = userService.findByUserId(request.getUserId());
         Post post = postService.findById(request.getPostId());
         Comment comment = new Comment(request.getContent(), user, post);
@@ -56,7 +56,7 @@ public class CommentService {
             comment.addParent(parentComment);
         }
 
-        commentRepository.save(comment);
+        return CommentResponse.from(commentRepository.save(comment));
     }
 
     public void delete(String userId, Long commentId) {

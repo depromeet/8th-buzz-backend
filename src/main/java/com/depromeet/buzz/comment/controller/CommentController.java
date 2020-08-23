@@ -50,9 +50,8 @@ public class CommentController {
         @Parameter(name = "userId", description = "유저 id"),
         @Parameter(name = "content", description = "댓글 내용")
     })
-    public ResponseEntity<Void> create(@RequestBody CommentCreateRequest request) {
-        commentService.create(request);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CommentResponse> create(@RequestBody CommentCreateRequest request) {
+        return ResponseEntity.ok(commentService.create(request));
     }
 
     @DeleteMapping("/{commentId}")
