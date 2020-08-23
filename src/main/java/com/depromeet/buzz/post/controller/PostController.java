@@ -50,7 +50,7 @@ public class PostController {
         @Parameter(name = "sortOption", description = "정렬 기준", in = ParameterIn.QUERY)
     })
     public ResponseEntity<Page<PostResponse>> get(PostsRequest request, @PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(postService.findPosts(request,pageable));
+        return ResponseEntity.ok(postService.findPosts(request, pageable));
     }
 
     @GetMapping("{postId}")
@@ -128,10 +128,7 @@ public class PostController {
     public ResponseEntity<Boolean> like(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
         User user = userService.findByUserId(userId);
 
-        if (postService.like(user, postId)) {
-            return ResponseEntity.ok(true);
-        }
-        return ResponseEntity.ok(false);
+        return ResponseEntity.ok(postService.like(user, postId));
     }
 
     @PostMapping("{postId}/participate")
