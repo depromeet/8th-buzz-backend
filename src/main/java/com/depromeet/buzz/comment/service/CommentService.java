@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -102,4 +103,18 @@ public class CommentService {
             .map(CommentResponse::from)
             .collect(Collectors.toList());
     }
+
+    public List<CommentResponse> findPopularCommentsByPostId(Long postId) {
+        List<Comment> comments = new ArrayList<>();
+        Map<Comment, Integer> commentsLikeCnt = commentRepository.findPopularCommentsByPostId(postId);
+
+        List<Comment> keySetList = new ArrayList<>(commentsLikeCnt.keySet());
+        Collections.sort(keySetList, (o1, o2) -> (commentsLikeCnt.get(o2).compareTo(commentsLikeCnt.get(o1))));
+        keySetList.stream().limit(3).forEach(k -> comments.add(k));
+
+        return comments.stream()
+            .map(CommentResponse::from)
+            .collect(Collectors.toList());
+    }
+
 }
