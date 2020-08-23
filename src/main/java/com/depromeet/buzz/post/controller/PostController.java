@@ -2,7 +2,6 @@ package com.depromeet.buzz.post.controller;
 
 import com.depromeet.buzz.comment.service.CommentService;
 import com.depromeet.buzz.post.dto.CommentResponse;
-import com.depromeet.buzz.post.dto.CommentResponses;
 import com.depromeet.buzz.post.dto.PostDescriptionResponse;
 import com.depromeet.buzz.post.dto.PostDetailResponse;
 import com.depromeet.buzz.post.dto.PostResponse;
@@ -16,7 +15,6 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -108,8 +105,8 @@ public class PostController {
     @Parameters(value = {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
-    public ResponseEntity<CommentResponses> getComments(@PathVariable Long postId) {
-        return ResponseEntity.ok(CommentResponses.mock());
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long postId) {
+        return ResponseEntity.ok(commentService.findPopularCommentsByPostId(postId));
     }
 
     @GetMapping("{postId}/comments/detail")
