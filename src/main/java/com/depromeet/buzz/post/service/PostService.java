@@ -57,15 +57,13 @@ public class PostService {
     public boolean like(User user, Long postId) {
         Optional<Wish> wishOptional = wishRepository.findByUserIdAndPostId(user.getId(), postId);
         if (wishOptional.isPresent()) {
-            return wishRepository.deleteByUserIdAndPostId(user.getId(), postId) == 1;
+            wishRepository.delete(wishOptional.get());
+            return false;
         }
 
-        Optional<Post> post = postRepository.findById(postId);
-        if (post.isPresent()) {
-            return wishRepository.save(new Wish(user, post.get())) != null;
-        }
-
-        return false;
+        Post post = findById(postId);
+        wishRepository.save(new Wish(user, post));
+        return true;
     }
 
     public void participate(String userId, Long postId) {

@@ -2,7 +2,6 @@ package com.depromeet.buzz.post.controller;
 
 import com.depromeet.buzz.comment.service.CommentService;
 import com.depromeet.buzz.post.dto.CommentResponse;
-import com.depromeet.buzz.post.dto.CommentResponses;
 import com.depromeet.buzz.post.dto.PostDescriptionResponse;
 import com.depromeet.buzz.post.dto.PostDetailResponse;
 import com.depromeet.buzz.post.dto.PostResponse;
@@ -25,6 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -49,7 +50,7 @@ public class PostController {
         @Parameter(name = "sortOption", description = "정렬 기준", in = ParameterIn.QUERY)
     })
     public ResponseEntity<Page<PostResponse>> get(PostsRequest request, @PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(postService.findPosts(request,pageable));
+        return ResponseEntity.ok(postService.findPosts(request, pageable));
     }
 
     @GetMapping("{postId}")
@@ -105,8 +106,8 @@ public class PostController {
     @Parameters(value = {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
-    public ResponseEntity<CommentResponses> getComments(@PathVariable Long postId) {
-        return ResponseEntity.ok(CommentResponses.mock());
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long postId) {
+        return ResponseEntity.ok(commentService.findPopularCommentsByPostId(postId));
     }
 
     @GetMapping("{postId}/comments/detail")
@@ -128,10 +129,7 @@ public class PostController {
     public ResponseEntity<Boolean> like(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
         User user = userService.findByUserId(userId);
 
-        if (postService.like(user, postId)) {
-            return ResponseEntity.ok(true);
-        }
-        return ResponseEntity.ok(false);
+        return ResponseEntity.ok(postService.like(user, postId));
     }
 
     @PostMapping("{postId}/participate")

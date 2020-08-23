@@ -2,6 +2,7 @@ package com.depromeet.buzz.comment.repository;
 
 import com.depromeet.buzz.comment.domain.Comment;
 import com.depromeet.buzz.comment.domain.QComment;
+import com.depromeet.buzz.comment.domain.QCommentLike;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
@@ -9,7 +10,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport implements CommentRepositoryCustom {
 
@@ -40,4 +43,22 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
         return new PageImpl<>(comments, pageable, totalCount);
     }
+
+    @Override
+    public Map<Comment, Integer> findPopularCommentsByPostId(Long postId) {
+        QComment comment = QComment.comment1;
+        QCommentLike commentLike = QCommentLike.commentLike;
+
+        Map<Comment, Integer> comentsLikeCnt = new HashMap<>();
+
+        from(comment)
+            .where(comment.post.id.eq(postId)
+                .and(comment.parentComment.isNull()))
+            .fetch()
+            .stream()
+            .forEach(c -> comentsLikeCnt.put(c, c.getCommentLikes().size()));
+
+        return comentsLikeCnt;
+    }
+
 }

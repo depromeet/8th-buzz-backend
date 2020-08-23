@@ -34,6 +34,8 @@ public class Post extends BasicEntity {
 
     private int price;
 
+    private String preview;
+
     private String thumbnail;
 
     private String detailPage;
@@ -62,11 +64,12 @@ public class Post extends BasicEntity {
     public Post() {
     }
 
-    public Post(String productName, int price, String thumbnail, String detailPage
+    public Post(String productName, int price, String preview, String thumbnail, String detailPage
         , int goal, LocalDateTime closingDate, Category category, User user,
                 List<Discount> discounts, List<Participation> participations) {
         this.productName = productName;
         this.price = price;
+        this.preview = preview;
         this.thumbnail = thumbnail;
         this.detailPage = detailPage;
         this.goal = goal;
@@ -114,6 +117,10 @@ public class Post extends BasicEntity {
 
     public int getPrice() {
         return price;
+    }
+
+    public String getPreview() {
+        return preview;
     }
 
     public String getThumbnail() {

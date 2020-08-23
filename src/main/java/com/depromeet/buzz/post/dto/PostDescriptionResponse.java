@@ -139,7 +139,7 @@ public class PostDescriptionResponse {
 
         public static Discount from(com.depromeet.buzz.discount.domain.Discount discount) {
             if (discount == null) {
-                return none();
+                return null;
             }
 
             return new Discount(

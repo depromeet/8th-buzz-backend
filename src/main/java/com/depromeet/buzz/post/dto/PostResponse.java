@@ -62,7 +62,7 @@ public class PostResponse {
         com.depromeet.buzz.discount.domain.Discount nextDiscount = post.getNextDiscount();
         return new PostResponse(
             post.getId(),
-            post.getThumbnail(),
+            post.getPreview(),
             post.getWishes().size(),
             numberOfCommentByPostIds.get(post.getId()),
             post.getProductName(),
@@ -162,7 +162,7 @@ public class PostResponse {
         }
         public static Discount from(com.depromeet.buzz.discount.domain.Discount discount) {
             if (discount == null) {
-                return none();
+                return null;
             }
 
             return new Discount(

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -47,7 +47,7 @@ public class CommentService {
             .orElseThrow(() -> new NotFoundException(String.format("댓글이 존재하지 않습니다. commentId : %s", commentId)));
     }
 
-    public void create(CommentCreateRequest request) {
+    public CommentResponse create(CommentCreateRequest request) {
         User user = userService.findByUserId(request.getUserId());
         Post post = postService.findById(request.getPostId());
         Comment comment = new Comment(request.getContent(), user, post);
@@ -58,7 +58,7 @@ public class CommentService {
             comment.addParent(parentComment);
         }
 
-        commentRepository.save(comment);
+        return CommentResponse.from(commentRepository.save(comment));
     }
 
     public void delete(String userId, Long commentId) {
@@ -74,15 +74,14 @@ public class CommentService {
     public boolean like(User user, Long commentId) {
         Optional<CommentLike> commentLike = commentLikeRepository.findByUserIdAndCommentId(user.getId(), commentId);
         if (commentLike.isPresent()) {
-            return commentLikeRepository.deleteByUserIdAndCommentId(user.getId(), commentId) == 1;
+            commentLikeRepository.delete(commentLike.get());
+            return false;
         }
 
-        Optional<Comment> comment = commentRepository.findById(commentId);
-        if (comment.isPresent()) {
-            return commentLikeRepository.save(new CommentLike(user, comment.get())) != null;
-        }
+        Comment comment = findById(commentId);
 
-        return false;
+        commentLikeRepository.save(new CommentLike(user, comment));
+        return true;
     }
 
     public Page<CommentResponse> findCommentsByPostId(Long postId, Pageable pageable) {
@@ -105,4 +104,18 @@ public class CommentService {
             .map(CommentResponse::from)
             .collect(Collectors.toList());
     }
+
+    public List<CommentResponse> findPopularCommentsByPostId(Long postId) {
+        List<Comment> comments = new ArrayList<>();
+        Map<Comment, Integer> commentsLikeCnt = commentRepository.findPopularCommentsByPostId(postId);
+
+        List<Comment> keySetList = new ArrayList<>(commentsLikeCnt.keySet());
+        Collections.sort(keySetList, (o1, o2) -> (commentsLikeCnt.get(o2).compareTo(commentsLikeCnt.get(o1))));
+        keySetList.stream().limit(3).forEach(k -> comments.add(k));
+
+        return comments.stream()
+            .map(CommentResponse::from)
+            .collect(Collectors.toList());
+    }
+
 }
