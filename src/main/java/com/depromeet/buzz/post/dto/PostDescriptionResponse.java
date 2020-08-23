@@ -1,6 +1,5 @@
 package com.depromeet.buzz.post.dto;
 
-import com.depromeet.buzz.discount.domain.Discount;
 import com.depromeet.buzz.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -8,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PostDescriptionResponse {

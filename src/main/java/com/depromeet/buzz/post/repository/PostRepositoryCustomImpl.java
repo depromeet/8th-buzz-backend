@@ -26,7 +26,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         BooleanExpression ex = post.productName.contains(request.getKeyword())
             .and(post.closingDate.after(LocalDateTime.now()).or(post.closingDate.eq(LocalDateTime.now())));
 
-
         if (request.getCategory() != null && request.getCategory().length() != 0) {
             ex = ex.and(post.category.name.eq(request.getCategory()));
         }
@@ -47,7 +46,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
             sort = post.price.asc();
         }
         if (sortOption.equals(Sort.RECOMMEND)) {
-//            sort = post.closingDate.asc();
+            //            sort = post.closingDate.asc();
         }
 
         List<Post> posts = from(post)
@@ -58,4 +57,5 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
             .fetch();
         return new PageImpl<>(posts, pageable, totalCount);
     }
+
 }

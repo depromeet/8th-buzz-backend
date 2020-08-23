@@ -38,6 +38,10 @@ public class Participation extends BasicEntity {
         return new Participation(user, post);
     }
 
+    public boolean isAuthor(User user) {
+        return this.user.equals(user);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

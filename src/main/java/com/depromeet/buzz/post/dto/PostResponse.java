@@ -2,7 +2,6 @@ package com.depromeet.buzz.post.dto;
 
 import com.depromeet.buzz.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.Month;

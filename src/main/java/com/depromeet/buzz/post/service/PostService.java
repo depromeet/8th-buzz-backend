@@ -5,7 +5,9 @@ import com.depromeet.buzz.participation.domain.Participation;
 import com.depromeet.buzz.participation.repository.ParticipationRepository;
 import com.depromeet.buzz.post.domain.Post;
 import com.depromeet.buzz.post.domain.Wish;
+import com.depromeet.buzz.post.dto.CommentResponse;
 import com.depromeet.buzz.post.dto.PostDescriptionResponse;
+import com.depromeet.buzz.post.dto.PostDetailResponse;
 import com.depromeet.buzz.post.dto.PostResponse;
 import com.depromeet.buzz.post.dto.PostSellerResponse;
 import com.depromeet.buzz.post.dto.PostsRequest;
@@ -119,4 +121,15 @@ public class PostService {
 
         return numberOfComments;
     }
+
+    public PostDetailResponse getDetailPost(User user, Long postId) {
+        Post post = postRepository.findById(postId).orElseGet(null);
+
+        List<CommentResponse> comments = commentRepository.findAllByPostId(postId).stream()
+            .map(CommentResponse::from)
+            .collect(Collectors.toList());
+
+        return PostDetailResponse.from(post, comments, user);
+    }
+
 }

@@ -58,8 +58,9 @@ public class PostController {
     @Parameters(value = {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
-    public ResponseEntity<PostDetailResponse> getPostDetail(@PathVariable Long postId) {
-        return ResponseEntity.ok(PostDetailResponse.mock());
+    public ResponseEntity<PostDetailResponse> getPostDetail(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
+        User user = userService.findByUserId(userId);
+        return ResponseEntity.ok(postService.getDetailPost(user, postId));
     }
 
     @GetMapping("{postId}/banner")
