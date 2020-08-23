@@ -75,6 +75,17 @@ insert into post(id,product_name,price,thumbnail,detail_page,created_date,closin
 (18,'칼리타 102LD 드립세트N',50000,'https://drive.google.com/file/d/1Rm9SSWWdncFPnfyTV5xqhT0sZYMl0-Zh/view?usp=sharing','https://drive.google.com/file/d/1sdEmHzbTqVTGpDE0AXPvb_9Zg9YytjQs/view?usp=sharing','2020-08-21 10:00:00','2020-08-28 23:59:59',7,39,200);
 
 
+-- 댓글
+insert into comment(id,created_date, comment,parent_comment_id,post_id,user_id)
+values
+(1,'2020-08-20 23:59:59','1번',null ,1,1),
+(2,'2020-08-20 22:59:59','2번',1 ,1,1),
+(3,'2020-08-20 21:59:59','3번',1 ,1,1),
+(4,'2020-08-20 23:40:59','4번',1 ,1,1),
+(5,'2020-08-20 18:59:59','5번',1 ,1,1),
+(6,'2020-08-20 11:59:59','6번',1 ,1,1),
+(7,'2020-08-20 23:50:59','7번',1 ,1,1);
+
 -- 할인율
 insert into discount(post_id,step,min_require,discount_rate)
 values

@@ -1,19 +1,29 @@
 package com.depromeet.buzz.comment.service;
 
 import com.depromeet.buzz.comment.domain.Comment;
+import com.depromeet.buzz.comment.domain.CommentLike;
 import com.depromeet.buzz.comment.dto.CommentCreateRequest;
+import com.depromeet.buzz.comment.repository.CommentLikeRepository;
 import com.depromeet.buzz.comment.repository.CommentRepository;
 import com.depromeet.buzz.post.domain.Post;
+import com.depromeet.buzz.post.dto.CommentResponse;
 import com.depromeet.buzz.post.service.PostService;
 import com.depromeet.buzz.user.domain.User;
 import com.depromeet.buzz.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import com.depromeet.buzz.comment.domain.CommentLike;
-import com.depromeet.buzz.comment.repository.CommentLikeRepository;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,7 +34,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
-    public CommentService(UserService userService, PostService postService, 
+    public CommentService(UserService userService, PostService postService,
                           CommentRepository commentRepository, CommentLikeRepository commentLikeRepository) {
         this.userService = userService;
         this.postService = postService;
@@ -34,7 +44,7 @@ public class CommentService {
 
     private Comment findById(Long commentId) {
         return commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException(String.format("댓글이 존재하지 않습니다. commentId : %s", commentId)));
+            .orElseThrow(() -> new NotFoundException(String.format("댓글이 존재하지 않습니다. commentId : %s", commentId)));
     }
 
     public void create(CommentCreateRequest request) {
@@ -60,19 +70,39 @@ public class CommentService {
         }
         commentRepository.delete(comment);
     }
-  
+
     public boolean like(User user, Long commentId) {
         Optional<CommentLike> commentLike = commentLikeRepository.findByUserIdAndCommentId(user.getId(), commentId);
-		    if(commentLike.isPresent()) {
-			      return commentLikeRepository.deleteByUserIdAndCommentId(user.getId(), commentId) == 1;
-		     }
+        if (commentLike.isPresent()) {
+            return commentLikeRepository.deleteByUserIdAndCommentId(user.getId(), commentId) == 1;
+        }
 
-		     Optional<Comment> comment = commentRepository.findById(commentId);
-		     if(comment.isPresent()) {
-			      return commentLikeRepository.save(new CommentLike(user, comment.get())) != null;
-		     }
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isPresent()) {
+            return commentLikeRepository.save(new CommentLike(user, comment.get())) != null;
+        }
 
-		      return false;
-	   }
+        return false;
+    }
 
+    public Page<CommentResponse> findCommentsByPostId(Long postId, Pageable pageable) {
+        Page<Comment> comments = commentRepository.findCommentsByPostId(postId, pageable);
+        List<CommentResponse> commentResponses = comments.getContent().stream()
+            .map(CommentResponse::getPreviewComment)
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(commentResponses, pageable, comments.getTotalElements());
+    }
+
+    public List<CommentResponse> findCommentWithSub(Long commentId) {
+        Comment comment = findById(commentId);
+
+        if (comment.hasParent()) {
+            return new ArrayList<>();
+        }
+
+        return comment.getSubComments().stream()
+            .map(CommentResponse::from)
+            .collect(Collectors.toList());
+    }
 }

@@ -33,7 +33,7 @@ public class Discount extends BasicEntity {
 
 	private int discountRate;
 
-	private Discount() {
+	public Discount() {
 
 	}
 
@@ -81,11 +81,9 @@ public class Discount extends BasicEntity {
 	public String toString() {
 		return "Discount{" +
 			"id=" + id +
-			", post=" + post +
 			", step=" + step +
 			", minRequire=" + minRequire +
 			", discountRate=" + discountRate +
 			'}';
 	}
-
 }

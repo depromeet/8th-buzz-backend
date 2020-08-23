@@ -26,7 +26,7 @@ public class Participation extends BasicEntity {
         return post;
     }
 
-    private Participation() {
+    public Participation() {
     }
 
     private Participation(User user, Post post) {
@@ -50,14 +50,4 @@ public class Participation extends BasicEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
-
-    @Override
-    public String toString() {
-        return "Participation{" +
-                "id=" + id +
-                ", user=" + user +
-                ", post=" + post +
-                '}';
-    }
-
 }

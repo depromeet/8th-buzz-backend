@@ -4,7 +4,17 @@ import com.depromeet.buzz.common.domain.BasicEntity;
 import com.depromeet.buzz.post.domain.Post;
 import com.depromeet.buzz.user.domain.User;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,13 +35,18 @@ public class Comment extends BasicEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
-    private List<Comment> subComments;
+    @OrderBy("createdDate desc")
+    private List<Comment> subComments = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    private List<CommentLike> commentLikes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parentComment;
 
-    private Comment() {
+    public Comment() {
     }
 
     public Comment(String comment, User user, Post post) {
@@ -70,8 +85,20 @@ public class Comment extends BasicEntity {
         return subComments;
     }
 
+    public Post getPost() {
+        return post;
+    }
+
+    public List<CommentLike> getCommentLikes() {
+        return commentLikes;
+    }
+
     public Comment getParentComment() {
         return parentComment;
+    }
+
+    public boolean hasParent() {
+        return this.parentComment != null;
     }
 
     @Override
@@ -90,11 +117,8 @@ public class Comment extends BasicEntity {
     @Override
     public String toString() {
         return "Comment{" +
-            "Id=" + id +
+            "id=" + id +
             ", comment='" + comment + '\'' +
-            ", user=" + user +
-            ", subComments=" + subComments +
-            ", parentComment=" + parentComment +
             '}';
     }
 }

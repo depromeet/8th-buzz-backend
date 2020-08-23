@@ -1,17 +1,19 @@
 package com.depromeet.buzz.post.dto;
 
 
+import com.depromeet.buzz.post.domain.Sort;
+
 public class PostsRequest {
     private String keyword;
 
     private String category;
 
-    private String sortOption;
+    private Sort sortOption;
 
     private PostsRequest() {
     }
 
-    public PostsRequest(String keyword, String category, String sortOption) {
+    public PostsRequest(String keyword, String category, Sort sortOption) {
         this.keyword = keyword;
         this.category = category;
         this.sortOption = sortOption;
@@ -25,7 +27,7 @@ public class PostsRequest {
         return category;
     }
 
-    public String getSortOption() {
+    public Sort getSortOption() {
         return sortOption;
     }
 }
