@@ -18,9 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,15 +72,14 @@ public class CommentService {
     public boolean like(User user, Long commentId) {
         Optional<CommentLike> commentLike = commentLikeRepository.findByUserIdAndCommentId(user.getId(), commentId);
         if (commentLike.isPresent()) {
-            return commentLikeRepository.deleteByUserIdAndCommentId(user.getId(), commentId) == 1;
+            commentLikeRepository.delete(commentLike.get());
+            return false;
         }
 
-        Optional<Comment> comment = commentRepository.findById(commentId);
-        if (comment.isPresent()) {
-            return commentLikeRepository.save(new CommentLike(user, comment.get())) != null;
-        }
+        Comment comment = findById(commentId);
 
-        return false;
+        commentLikeRepository.save(new CommentLike(user, comment));
+        return true;
     }
 
     public Page<CommentResponse> findCommentsByPostId(Long postId, Pageable pageable) {
