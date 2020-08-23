@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.depromeet.buzz.post.domain.Post;
+import com.depromeet.buzz.user.domain.User;
 
 public class PostDetailResponse {
     private Long postId;
@@ -55,12 +56,12 @@ public class PostDetailResponse {
                 ));
     }
 
-    public static PostDetailResponse from(Post post, List<CommentResponse> comments) {
+    public static PostDetailResponse from(Post post, List<CommentResponse> comments, User user) {
         boolean isWished = post.getWishes().stream()
-            .anyMatch(wish -> wish.isAuthor(post.getUser()));
+            .anyMatch(wish -> wish.isAuthor(user));
 
         boolean isParticipated = post.getParticipations().stream()
-            .anyMatch(participation -> participation.isAuthor(post.getUser()));
+            .anyMatch(participation -> participation.isAuthor(user));
 
         return new PostDetailResponse(
             post.getId(),

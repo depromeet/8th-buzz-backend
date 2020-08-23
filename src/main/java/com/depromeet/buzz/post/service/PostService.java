@@ -124,14 +124,14 @@ public class PostService {
         return numberOfComments;
     }
 
-    public PostDetailResponse getDetailPost(Long postId) {
+    public PostDetailResponse getDetailPost(User user, Long postId) {
         Post post = postRepository.findById(postId).orElseGet(null);
 
         List<CommentResponse> comments = commentRepository.findAllByPostId(postId).stream()
             .map(CommentResponse::from)
             .collect(Collectors.toList());
 
-        return PostDetailResponse.from(post, comments);
+        return PostDetailResponse.from(post, comments, user);
     }
 
 }
