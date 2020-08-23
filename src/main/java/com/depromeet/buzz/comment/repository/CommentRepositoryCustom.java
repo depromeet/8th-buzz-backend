@@ -9,5 +9,5 @@ import org.springframework.data.domain.Pageable;
 public interface CommentRepositoryCustom {
     Page<Comment> findCommentsByPostId(Long postId, Pageable pageable);
 
-    Map<Comment, Long> findPopularCommentsByPostId(Long postId);
+    Map<Comment, Integer> findPopularCommentsByPostId(Long postId);
 }

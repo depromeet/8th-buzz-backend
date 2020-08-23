@@ -108,7 +108,7 @@ public class CommentService {
 
     public List<CommentResponse> findPopularCommentsByPostId(Long postId) {
         List<Comment> comments = new ArrayList<>();
-        Map<Comment, Long> commentsLikeCnt = commentRepository.findPopularCommentsByPostId(postId);
+        Map<Comment, Integer> commentsLikeCnt = commentRepository.findPopularCommentsByPostId(postId);
 
         List<Comment> keySetList = new ArrayList<>(commentsLikeCnt.keySet());
         Collections.sort(keySetList, (o1, o2) -> (commentsLikeCnt.get(o2).compareTo(commentsLikeCnt.get(o1))));

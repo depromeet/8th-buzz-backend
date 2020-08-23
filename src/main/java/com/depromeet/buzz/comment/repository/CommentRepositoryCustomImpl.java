@@ -45,22 +45,18 @@ public class CommentRepositoryCustomImpl extends QuerydslRepositorySupport imple
     }
 
     @Override
-    public Map<Comment, Long> findPopularCommentsByPostId(Long postId) {
+    public Map<Comment, Integer> findPopularCommentsByPostId(Long postId) {
         QComment comment = QComment.comment1;
         QCommentLike commentLike = QCommentLike.commentLike;
 
-        Map<Comment, Long> comentsLikeCnt = new HashMap<>();
+        Map<Comment, Integer> comentsLikeCnt = new HashMap<>();
+
         from(comment)
             .where(comment.post.id.eq(postId)
                 .and(comment.parentComment.isNull()))
             .fetch()
             .stream()
-            .forEach(c -> {
-                long cnt = from(commentLike)
-                    .where(commentLike.comment.id.eq(c.getId()))
-                    .fetchCount();
-                comentsLikeCnt.put(c, cnt);
-            });
+            .forEach(c -> comentsLikeCnt.put(c, c.getCommentLikes().size()));
 
         return comentsLikeCnt;
     }
