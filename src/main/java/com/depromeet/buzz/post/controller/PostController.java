@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -53,7 +49,7 @@ public class PostController {
         @Parameter(name = "sortOption", description = "정렬 기준", in = ParameterIn.QUERY)
     })
     public ResponseEntity<Page<PostResponse>> get(PostsRequest request, @PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(postService.findPosts(request,pageable));
+        return ResponseEntity.ok(postService.findPosts(request, pageable));
     }
 
     @GetMapping("{postId}")
@@ -131,10 +127,7 @@ public class PostController {
     public ResponseEntity<Boolean> like(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
         User user = userService.findByUserId(userId);
 
-        if (postService.like(user, postId)) {
-            return ResponseEntity.ok(true);
-        }
-        return ResponseEntity.ok(false);
+        return ResponseEntity.ok(postService.like(user, postId));
     }
 
     @PostMapping("{postId}/participate")
