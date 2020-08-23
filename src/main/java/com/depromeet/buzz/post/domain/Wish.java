@@ -33,6 +33,10 @@ public class Wish extends BasicEntity {
 		this.post = post;
 	}
 
+	public boolean isAuthor(User user) {
+		return this.user.equals(user);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

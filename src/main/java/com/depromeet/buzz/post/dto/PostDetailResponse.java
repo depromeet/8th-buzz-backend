@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.depromeet.buzz.post.domain.Post;
+
 public class PostDetailResponse {
     private Long postId;
     //맨위 배너 url
@@ -11,6 +13,9 @@ public class PostDetailResponse {
     private PostDescriptionResponse description;
     private PostSellerResponse seller;
     private String contentUrl;
+    private boolean isParticipated;
+    private boolean isWished;
+    private int commentsCnt;
     private List<CommentResponse> comments;
 
     private PostDetailResponse() {
@@ -21,13 +26,18 @@ public class PostDetailResponse {
                               PostDescriptionResponse description,
                               PostSellerResponse seller,
                               String contentUrl,
+                              Boolean isParticipated,
+                              Boolean isWished,
                               List<CommentResponse> comments) {
         this.postId = postId;
         this.BannerUrl = bannerUrl;
         this.description = description;
         this.seller = seller;
         this.contentUrl = contentUrl;
+        this.isParticipated = isParticipated;
+        this.isWished = isWished;
         this.comments = comments;
+        this.commentsCnt = comments.size();
     }
 
     public static PostDetailResponse mock() {
@@ -36,11 +46,32 @@ public class PostDetailResponse {
                 PostDescriptionResponse.mock(),
                 PostSellerResponse.mock(),
                 "https://files.slack.com/files-pri/T01753WJ8H1-F01916BREKE/image.png",
+                false,
+                false,
                 Arrays.asList(
                         CommentResponse.mock(1L, 150, "첫번째 댓글 ", true, new ArrayList<>()),
                         CommentResponse.mock(2L, 120, "두번째 댓글 ", false, new ArrayList<>()),
                         CommentResponse.mock(3L, 100, "세번째 댓글 ", false, new ArrayList<>())
                 ));
+    }
+
+    public static PostDetailResponse from(Post post, List<CommentResponse> comments) {
+        boolean isWished = post.getWishes().stream()
+            .anyMatch(wish -> wish.isAuthor(post.getUser()));
+
+        boolean isParticipated = post.getParticipations().stream()
+            .anyMatch(participation -> participation.isAuthor(post.getUser()));
+
+        return new PostDetailResponse(
+            post.getId(),
+            post.getThumbnail(),
+            PostDescriptionResponse.from(post),
+            PostSellerResponse.from(post.getUser()),
+            post.getDetailPage(),
+            isParticipated,
+            isWished,
+            comments
+        );
     }
 
     public Long getPostId() {
