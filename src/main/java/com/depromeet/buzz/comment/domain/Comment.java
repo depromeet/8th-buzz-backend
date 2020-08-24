@@ -44,7 +44,7 @@ public class Comment extends BasicEntity {
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<CommentLike> commentLikes = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Comment parentComment;
 
     public Comment() {
