@@ -29,6 +29,7 @@ public class PostDetailResponse {
         String contentUrl,
         Boolean isParticipated,
         Boolean isWished,
+        int commentsCnt,
         List<CommentResponse> comments) {
         this.postId = postId;
         this.BannerUrl = bannerUrl;
@@ -38,7 +39,7 @@ public class PostDetailResponse {
         this.isParticipated = isParticipated;
         this.isWished = isWished;
         this.comments = comments;
-        this.commentsCnt = comments.size();
+        this.commentsCnt = commentsCnt;
     }
 
     public static PostDetailResponse mock() {
@@ -49,6 +50,7 @@ public class PostDetailResponse {
             "https://files.slack.com/files-pri/T01753WJ8H1-F01916BREKE/image.png",
             false,
             false,
+            10,
             Arrays.asList(
                 CommentResponse.mock(1L, 150, "첫번째 댓글 ", true, new ArrayList<>()),
                 CommentResponse.mock(2L, 120, "두번째 댓글 ", false, new ArrayList<>()),
@@ -56,7 +58,7 @@ public class PostDetailResponse {
             ));
     }
 
-    public static PostDetailResponse from(Post post, List<CommentResponse> comments, User user) {
+    public static PostDetailResponse from(Post post, List<CommentResponse> comments, int commentsCnt, User user) {
         boolean isWished = post.getWishes().stream()
             .anyMatch(wish -> wish.isAuthor(user));
 
@@ -71,6 +73,7 @@ public class PostDetailResponse {
             post.getDetailPage(),
             isParticipated,
             isWished,
+            commentsCnt,
             comments
         );
     }

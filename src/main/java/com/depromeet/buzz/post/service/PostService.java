@@ -125,7 +125,8 @@ public class PostService {
     public PostDetailResponse getDetailPost(User user, List<CommentResponse> comments, Long postId) {
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new NotFoundException(String.format("게시글을 찾을 수 없습니다. postId: %s", postId)));
-        return PostDetailResponse.from(post, comments, user);
+        int commentsCnt = commentRepository.countAllByPostId(postId);
+        return PostDetailResponse.from(post, comments, commentsCnt, user);
     }
 
 }
