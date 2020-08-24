@@ -3,7 +3,6 @@ package com.depromeet.buzz.comment.domain;
 import com.depromeet.buzz.common.domain.BasicEntity;
 import com.depromeet.buzz.post.domain.Post;
 import com.depromeet.buzz.user.domain.User;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -35,7 +34,6 @@ public class Comment extends BasicEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
-
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
     @OrderBy("createdDate desc")

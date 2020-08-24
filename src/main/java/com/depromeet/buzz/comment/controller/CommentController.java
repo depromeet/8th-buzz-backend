@@ -38,8 +38,9 @@ public class CommentController {
     @Parameters(value = {
         @Parameter(name = "commentId", description = "상위 댓글 아이디")
     })
-    public ResponseEntity<List<CommentResponse>> getComment(@PathVariable Long commentId) {
-        return ResponseEntity.ok(commentService.findCommentWithSub(commentId));
+    public ResponseEntity<List<CommentResponse>> getComment(@RequestHeader("User-ID") String userId, @PathVariable Long commentId) {
+        User user = userService.findByUserId(userId);
+        return ResponseEntity.ok(commentService.findCommentWithSub(commentId, user));
     }
 
     @PostMapping

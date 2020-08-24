@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,7 +57,7 @@ public class CommentService {
             comment.addParent(parentComment);
         }
 
-        return CommentResponse.from(commentRepository.save(comment));
+        return CommentResponse.from(commentRepository.save(comment), user);
     }
 
     public Boolean delete(String userId, Long commentId) {
@@ -74,9 +73,10 @@ public class CommentService {
     }
 
     public boolean like(User user, Long commentId) {
-        Optional<CommentLike> commentLike = commentLikeRepository.findByUserIdAndCommentId(user.getId(), commentId);
-        if (commentLike.isPresent()) {
-            commentLikeRepository.delete(commentLike.get());
+        CommentLike commentLike = commentLikeRepository.findByUserIdAndCommentId(user.getId(), commentId);
+
+        if (commentLike != null) {
+            commentLikeRepository.delete(commentLike);
             return false;
         }
 
@@ -85,16 +85,16 @@ public class CommentService {
         return true;
     }
 
-    public Page<CommentResponse> findCommentsByPostId(Long postId, Pageable pageable) {
+    public Page<CommentResponse> findCommentsByPostId(Long postId, Pageable pageable, User user) {
         Page<Comment> comments = commentRepository.findCommentsByPostId(postId, pageable);
         List<CommentResponse> commentResponses = comments.getContent().stream()
-            .map(CommentResponse::getPreviewComment)
+            .map(comment -> CommentResponse.getPreviewComment(comment, user))
             .collect(Collectors.toList());
 
         return new PageImpl<>(commentResponses, pageable, comments.getTotalElements());
     }
 
-    public List<CommentResponse> findCommentWithSub(Long commentId) {
+    public List<CommentResponse> findCommentWithSub(Long commentId, User user) {
         Comment comment = findById(commentId);
 
         if (comment.hasParent()) {
@@ -102,11 +102,11 @@ public class CommentService {
         }
 
         return comment.getSubComments().stream()
-            .map(CommentResponse::from)
+            .map(c -> CommentResponse.from(c, user))
             .collect(Collectors.toList());
     }
 
-    public List<CommentResponse> findPopularCommentsByPostId(Long postId) {
+    public List<CommentResponse> findPopularCommentsByPostId(Long postId, User user) {
         List<Comment> comments = new ArrayList<>();
         Map<Comment, Integer> commentsLikeCnt = commentRepository.findPopularCommentsByPostId(postId);
 
@@ -115,7 +115,7 @@ public class CommentService {
         keySetList.stream().limit(3).forEach(k -> comments.add(k));
 
         return comments.stream()
-            .map(CommentResponse::from)
+            .map(c -> CommentResponse.from(c, user))
             .collect(Collectors.toList());
     }
 

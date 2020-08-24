@@ -60,7 +60,7 @@ public class PostController {
     })
     public ResponseEntity<PostDetailResponse> getPostDetail(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
         User user = userService.findByUserId(userId);
-        List<CommentResponse> comments = commentService.findPopularCommentsByPostId(postId);
+        List<CommentResponse> comments = commentService.findPopularCommentsByPostId(postId, user);
         return ResponseEntity.ok(postService.getDetailPost(user, comments, postId));
     }
 
@@ -107,8 +107,9 @@ public class PostController {
     @Parameters(value = {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
-    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long postId) {
-        return ResponseEntity.ok(commentService.findPopularCommentsByPostId(postId));
+    public ResponseEntity<List<CommentResponse>> getComments(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
+        User user = userService.findByUserId(userId);
+        return ResponseEntity.ok(commentService.findPopularCommentsByPostId(postId, user));
     }
 
     @GetMapping("{postId}/comments/detail")
@@ -118,8 +119,9 @@ public class PostController {
         @Parameter(name = "page", description = "현재 페이지 정보 기본은 0", in = ParameterIn.QUERY),
         @Parameter(name = "size", description = "원하는 컨텐츠 수 기본은 10", in = ParameterIn.QUERY),
     })
-    public ResponseEntity<Page<CommentResponse>> getCommentsDetail(@PathVariable Long postId, Pageable pageable) {
-        return ResponseEntity.ok(commentService.findCommentsByPostId(postId, pageable));
+    public ResponseEntity<Page<CommentResponse>> getCommentsDetail(@RequestHeader("User-ID") String userId, @PathVariable Long postId, Pageable pageable) {
+        User user = userService.findByUserId(userId);
+        return ResponseEntity.ok(commentService.findCommentsByPostId(postId, pageable, user));
     }
 
     @PostMapping("{postId}/like")
