@@ -115,6 +115,7 @@ public class CommentService {
         keySetList.stream().limit(3).forEach(k -> comments.add(k));
 
         return comments.stream()
+            .filter(comment -> !comment.hasParent())
             .map(c -> CommentResponse.from(c, user))
             .collect(Collectors.toList());
     }
