@@ -60,7 +60,8 @@ public class PostController {
     })
     public ResponseEntity<PostDetailResponse> getPostDetail(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
         User user = userService.findByUserId(userId);
-        return ResponseEntity.ok(postService.getDetailPost(user, postId));
+        List<CommentResponse> comments = commentService.findPopularCommentsByPostId(postId);
+        return ResponseEntity.ok(postService.getDetailPost(user, comments, postId));
     }
 
     @GetMapping("{postId}/banner")

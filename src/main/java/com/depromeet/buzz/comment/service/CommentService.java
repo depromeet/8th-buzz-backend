@@ -81,7 +81,6 @@ public class CommentService {
         }
 
         Comment comment = findById(commentId);
-
         commentLikeRepository.save(new CommentLike(user, comment));
         return true;
     }

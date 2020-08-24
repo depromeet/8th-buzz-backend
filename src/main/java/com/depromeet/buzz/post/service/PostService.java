@@ -122,14 +122,11 @@ public class PostService {
         return numberOfComments;
     }
 
-    public PostDetailResponse getDetailPost(User user, Long postId) {
-        Post post = postRepository.findById(postId).orElseGet(null);
-
-        List<CommentResponse> comments = commentRepository.findAllByPostId(postId).stream()
-            .map(CommentResponse::from)
-            .collect(Collectors.toList());
-
-        return PostDetailResponse.from(post, comments, user);
+    public PostDetailResponse getDetailPost(User user, List<CommentResponse> comments, Long postId) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new NotFoundException(String.format("게시글을 찾을 수 없습니다. postId: %s", postId)));
+        int commentsCnt = commentRepository.countAllByPostId(postId);
+        return PostDetailResponse.from(post, comments, commentsCnt, user);
     }
 
 }
