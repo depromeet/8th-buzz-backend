@@ -23,13 +23,13 @@ public class PostDetailResponse {
     }
 
     public PostDetailResponse(Long postId,
-                              String bannerUrl,
-                              PostDescriptionResponse description,
-                              PostSellerResponse seller,
-                              String contentUrl,
-                              Boolean isParticipated,
-                              Boolean isWished,
-                              List<CommentResponse> comments) {
+        String bannerUrl,
+        PostDescriptionResponse description,
+        PostSellerResponse seller,
+        String contentUrl,
+        Boolean isParticipated,
+        Boolean isWished,
+        List<CommentResponse> comments) {
         this.postId = postId;
         this.BannerUrl = bannerUrl;
         this.description = description;
@@ -43,17 +43,17 @@ public class PostDetailResponse {
 
     public static PostDetailResponse mock() {
         return new PostDetailResponse(1L,
-                "https://fs.jtbc.joins.com/prog/img/mig/MOBILE/PR10010297.jpg",
-                PostDescriptionResponse.mock(),
-                PostSellerResponse.mock(),
-                "https://files.slack.com/files-pri/T01753WJ8H1-F01916BREKE/image.png",
-                false,
-                false,
-                Arrays.asList(
-                        CommentResponse.mock(1L, 150, "첫번째 댓글 ", true, new ArrayList<>()),
-                        CommentResponse.mock(2L, 120, "두번째 댓글 ", false, new ArrayList<>()),
-                        CommentResponse.mock(3L, 100, "세번째 댓글 ", false, new ArrayList<>())
-                ));
+            "https://fs.jtbc.joins.com/prog/img/mig/MOBILE/PR10010297.jpg",
+            PostDescriptionResponse.mock(),
+            PostSellerResponse.mock(),
+            "https://files.slack.com/files-pri/T01753WJ8H1-F01916BREKE/image.png",
+            false,
+            false,
+            Arrays.asList(
+                CommentResponse.mock(1L, 150, "첫번째 댓글 ", true, new ArrayList<>()),
+                CommentResponse.mock(2L, 120, "두번째 댓글 ", false, new ArrayList<>()),
+                CommentResponse.mock(3L, 100, "세번째 댓글 ", false, new ArrayList<>())
+            ));
     }
 
     public static PostDetailResponse from(Post post, List<CommentResponse> comments, User user) {

@@ -59,9 +59,8 @@ public class CommentController {
     @Parameters(value = {
         @Parameter(name = "commentId", description = "댓글 id", in = ParameterIn.PATH)
     })
-    public ResponseEntity<Void> delete(@RequestHeader("User-ID") String userId, @PathVariable Long commentId) {
-        commentService.delete(userId, commentId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> delete(@RequestHeader("User-ID") String userId, @PathVariable Long commentId) {
+        return ResponseEntity.ok(commentService.delete(userId, commentId));
     }
 
     @PostMapping("{commentId}/like")

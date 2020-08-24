@@ -61,14 +61,16 @@ public class CommentService {
         return CommentResponse.from(commentRepository.save(comment));
     }
 
-    public void delete(String userId, Long commentId) {
+    public Boolean delete(String userId, Long commentId) {
         User user = userService.findByUserId(userId);
         Comment comment = findById(commentId);
 
         if (!comment.isEnableDelete(user)) {
             throw new IllegalArgumentException("해당 유저는 해당 댓글을 삭제할 수 없습니다.");
         }
+
         commentRepository.delete(comment);
+        return true;
     }
 
     public boolean like(User user, Long commentId) {
