@@ -95,6 +95,18 @@ public class PostDetailResponse {
         return contentUrl;
     }
 
+    public boolean isParticipated() {
+        return isParticipated;
+    }
+
+    public boolean isWished() {
+        return isWished;
+    }
+
+    public int getCommentsCnt() {
+        return commentsCnt;
+    }
+
     public List<CommentResponse> getComments() {
         return comments;
     }
