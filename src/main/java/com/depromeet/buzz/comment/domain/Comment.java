@@ -35,7 +35,6 @@ public class Comment extends BasicEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
     @OrderBy("createdDate desc")
     private List<Comment> subComments = new ArrayList<>();

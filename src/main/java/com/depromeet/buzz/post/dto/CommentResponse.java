@@ -56,9 +56,9 @@ public class CommentResponse {
         );
     }
 
-    public static CommentResponse from(Comment comment) {
+    public static CommentResponse from(Comment comment, User user) {
         boolean isLiked = comment.getCommentLikes().stream()
-            .anyMatch(commentLike -> commentLike.isAuthor(comment.getUser()));
+            .anyMatch(commentLike -> commentLike.isAuthor(user));
 
         return new CommentResponse(
             comment.getId(),
@@ -70,14 +70,14 @@ public class CommentResponse {
             isLiked,
             comment.getSubComments() == null
                 ? new ArrayList<>()
-                : comment.getSubComments().stream().map(CommentResponse::from).collect(Collectors.toList())
+                : comment.getSubComments().stream().map(c -> CommentResponse.from(c, user)).collect(Collectors.toList())
         );
 
     }
 
-    public static CommentResponse getPreviewComment(Comment comment) {
+    public static CommentResponse getPreviewComment(Comment comment, User user) {
         boolean isLiked = comment.getCommentLikes().stream()
-            .anyMatch(commentLike -> commentLike.isAuthor(comment.getUser()));
+            .anyMatch(commentLike -> commentLike.isAuthor(user));
 
         return new CommentResponse(
             comment.getId(),
@@ -89,7 +89,10 @@ public class CommentResponse {
             isLiked,
             comment.getSubComments() == null
                 ? new ArrayList<>()
-                : comment.getSubComments().subList(0, getCommentsSize(comment.getSubComments())).stream().map(CommentResponse::getPreviewComment).collect(Collectors.toList())
+                : comment.getSubComments().subList(0, getCommentsSize(comment.getSubComments()))
+                .stream()
+                .map(c -> CommentResponse.getPreviewComment(c, user))
+                .collect(Collectors.toList())
         );
     }
 
