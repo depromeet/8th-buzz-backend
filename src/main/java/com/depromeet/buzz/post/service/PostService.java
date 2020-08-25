@@ -66,7 +66,7 @@ public class PostService {
         return true;
     }
 
-    public void participate(String userId, Long postId) {
+    public boolean participate(String userId, Long postId) {
         if (participationRepository.existsByUserUserIdAndPostId(userId, postId)) {
             throw new IllegalArgumentException("이미 참여중입니다.");
         }
@@ -74,6 +74,7 @@ public class PostService {
         Post post = findById(postId);
         Participation participation = Participation.participate(user, post);
         participationRepository.save(participation);
+        return true;
     }
 
     public String getContent(Long postId) {

@@ -141,8 +141,7 @@ public class PostController {
         @Parameter(name = "postId", description = "게시글 id", in = ParameterIn.PATH)
     })
     public ResponseEntity<Boolean> participate(@RequestHeader("User-ID") String userId, @PathVariable Long postId) {
-        postService.participate(userId, postId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(postService.participate(userId, postId));
     }
 
 }
