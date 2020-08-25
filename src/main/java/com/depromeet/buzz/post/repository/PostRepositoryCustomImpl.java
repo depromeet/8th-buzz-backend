@@ -4,8 +4,8 @@ import com.depromeet.buzz.post.domain.Post;
 import com.depromeet.buzz.post.domain.QPost;
 import com.depromeet.buzz.post.domain.Sort;
 import com.depromeet.buzz.post.dto.PostsRequest;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,37 +24,41 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     public Page<Post> findPosts(PostsRequest request, Pageable pageable) {
         QPost post = QPost.post;
         BooleanExpression ex = post.productName.contains(request.getKeyword())
-            .and(post.closingDate.after(LocalDateTime.now()).or(post.closingDate.eq(LocalDateTime.now())));
+                .and(post.closingDate.after(LocalDateTime.now()).or(post.closingDate.eq(LocalDateTime.now())));
 
         if (request.getCategory() != null && request.getCategory().length() != 0) {
             ex = ex.and(post.category.name.eq(request.getCategory()));
         }
 
         long totalCount = from(post)
-            .where(ex)
-            .fetchCount();
+                .where(ex)
+                .fetchCount();
 
         Sort sortOption = request.getSortOption();
-        OrderSpecifier sort = post.createdDate.desc();
+        JPQLQuery<Post> query = from(post)
+                .where(ex)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
         if (sortOption.equals(Sort.CLOSE)) {
-            sort = post.closingDate.asc();
+            query = query
+                    .orderBy(post.closingDate.asc());
         }
         if (sortOption.equals(Sort.LIKE)) {
-            sort = post.wishes.size().desc();
+            query = query
+                    .orderBy(post.wishes.size().desc());
         }
         if (sortOption.equals(Sort.PRICE)) {
-            sort = post.price.asc();
+            query = query
+                    .orderBy(post.price.asc());
         }
         if (sortOption.equals(Sort.RECOMMEND)) {
-            //            sort = post.closingDate.asc();
+            query = query
+                    .orderBy(post.participations.size().desc(), post.closingDate.asc());
         }
 
-        List<Post> posts = from(post)
-            .where(ex)
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .orderBy(sort)
-            .fetch();
+        List<Post> posts = query
+                .fetch();
         return new PageImpl<>(posts, pageable, totalCount);
     }
 
