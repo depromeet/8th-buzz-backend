@@ -42,19 +42,19 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
         if (sortOption.equals(Sort.CLOSE)) {
             query = query
-                    .orderBy(post.closingDate.asc());
+                    .orderBy(post.closingDate.asc(), post.id.asc());
         }
         if (sortOption.equals(Sort.LIKE)) {
             query = query
-                    .orderBy(post.wishes.size().desc());
+                    .orderBy(post.wishes.size().desc(), post.id.asc());
         }
         if (sortOption.equals(Sort.PRICE)) {
             query = query
-                    .orderBy(post.price.asc());
+                    .orderBy(post.price.asc(), post.id.asc());
         }
         if (sortOption.equals(Sort.RECOMMEND)) {
             query = query
-                    .orderBy(post.participations.size().desc(), post.closingDate.asc());
+                    .orderBy(post.participations.size().desc(), post.closingDate.asc(), post.id.asc());
         }
 
         List<Post> posts = query
