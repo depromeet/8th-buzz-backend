@@ -226,7 +226,7 @@ values
 
 insert into post(id,product_name,price,preview,thumbnail,detail_page,created_date,closing_date,category_id,user_id,goal)
         values
-(14,'화이트닝 선에센스 기획세트',38000,'https://drive.google.com/uc?export=view&id=1PAAMD7s8nEqAvidZfnS270B8oj58boQt','https://drive.google.com/uc?export=view&id=1lP0nRM5sjwbGXtzVUJnv8XF12tUsBE_o','https://drive.google.com/uc?export=view&id=1Yd7vzcJRZOXdr4zDwJMLxiiLTalSDNoP','2020-08-27 10:00:00','2020-09-02 23:59:59',3,13,500);
+(14,'화이트닝 선에센스 기획세트',38000,'https://drive.google.com/uc?export=view&id=1PAAMD7s8nEqAvidZfnS270B8oj58boQt','https://drive.google.com/uc?export=view&id=1lP0nRM5sjwbGXtzVUJnv8XF12tUsBE_o','https://drive.google.com/uc?export=view&id=1Yd7vzcJRZOXdr4zDwJMLxiiLTalSDNoP','2020-08-27 10:00:00','2020-09-02 23:59:59',3,13,500);
 insert into discount(post_id,step,min_require,discount_rate)
 values
 (14,'FIRST',200,15),
